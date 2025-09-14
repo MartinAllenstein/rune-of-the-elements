@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
 public class TestEnemy : MonoBehaviour
 {
+    public static event Action<TestEnemy> OnEnemyKilled;
+    
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float obstacleCheckDistance = 0.6f;
@@ -60,7 +63,7 @@ public class TestEnemy : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
-        Debug.Log(gameObject.name + " took " + damageAmount + " damage. Health is now " + currentHealth);
+        //Debug.Log(gameObject.name + " took " + damageAmount + " damage. Health is now " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -70,8 +73,10 @@ public class TestEnemy : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log(gameObject.name + " has died.");
+        //Debug.Log(gameObject.name + " has died.");
         // เพิ่มเอฟเฟกต์ตอนตาย หรือทำลาย GameObject ทิ้ง
+        OnEnemyKilled?.Invoke(this);
+        
         Destroy(gameObject);
     }
 
