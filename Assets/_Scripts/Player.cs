@@ -79,7 +79,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         }
 
         float interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask))
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask, QueryTriggerInteraction.Ignore))
         {
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
@@ -109,7 +109,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         float moveDistance = moveSpeed * Time.deltaTime;
         float playerHeight = 2f;
         float playerRadius = 0.7f;
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirection, moveDistance);
+        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirection, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
         if (!canMove)
         {
@@ -117,7 +117,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
             // Attempt only X movement
             Vector3 moveDirX = new Vector3(moveDirection.x, 0, 0).normalized;
-            canMove = moveDirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+            canMove = moveDirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
             if (canMove)
             {
@@ -130,7 +130,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
                 // Attempt only Z movement
                 Vector3 moveDirZ = new Vector3(0, 0, moveDirection.z).normalized;
-                canMove = moveDirection.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
+                canMove = moveDirection.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
                 if (canMove)
                 {

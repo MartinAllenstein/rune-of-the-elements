@@ -71,7 +71,7 @@ public class StoveCounter : BaseCounter, IHasProgress
                     
                     if (burningTimer > burningRecipeSO.burningTimerMax)
                     {
-                        // Fried
+                        // Burned
                         GetKitchenObject().DestroySelf();
 
                         KitchenObject.SpawnKitchenObject(burningRecipeSO.output, this);
