@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a65cf3e52d5d8e49907b482b86505a8, type: 3}
   m_Name: Wave 2
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 9082870514267642486, guid: 1da933b930f853e44aa4b328f4b85c4e, type: 3}
+  enemyPrefab: {fileID: 9082870514267642486, guid: dbcd7cc8e69632147826b742a6ea7292, type: 3}
   enemyCount: 4
   spawnInterval: 6
