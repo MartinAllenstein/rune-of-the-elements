@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TestBase : BaseCounter
 {
+    [System.Serializable]
+    public class AmmoTypeVisual
+    {
+        public KitchenObjectSO ammoKitchenObjectSO; // กระสุนที่ใช้
+        public GameObject visualGameObject;       // Sprite ที่จะแสดงผล
+    }
+    
     private enum BaseState
     {
         Idle,
@@ -19,17 +27,19 @@ public class TestBase : BaseCounter
     public float fireRate = 1f;
     public float damage = 25f;
     public SphereCollider rangeCollider;
-
-    [SerializeField] private List<KitchenObjectSO> acceptedKitchenObjectSOs;
+    
+    [Header("Visuals & Ammo")]
+    [SerializeField] private List<AmmoTypeVisual> ammoVisuals; // ลิสต์สำหรับจับคู่กระสุนกับ Sprite
+    [SerializeField] private Transform kitchenObjectHoldPoint;
     
     [Header("Targeting")]
     private Transform currentTarget;
     private List<Transform> enemiesInRange = new List<Transform>();
     private float fireCountdown = 0f;
     
-    [Header("Visuals")]
-    [SerializeField] private GameObject firingSprite;
-    [SerializeField] private Transform kitchenObjectHoldPoint;
+    // [Header("Visuals")]
+    // [SerializeField] private GameObject firingSprite;
+    // [SerializeField] private Transform kitchenObjectHoldPoint;
     
     void Start()
     {
@@ -47,10 +57,7 @@ public class TestBase : BaseCounter
             Debug.LogError("Base requires a SphereCollider component for range detection.", this);
         }
         
-        if (firingSprite != null)
-        {
-            firingSprite.SetActive(false);
-        }
+        UpdateAmmoVisual(null);
     }
     
     void Update()
@@ -75,8 +82,10 @@ public class TestBase : BaseCounter
         // If TheBase doesn't have an Item AND Player have an Item
         if (!HasKitchenObject() && player.HasKitchenObject())
         {
+            KitchenObjectSO placedAmmoSO = player.GetKitchenObject().GetKitchenObjectSO();
+            
             // Check the item
-            if (acceptedKitchenObjectSOs.Contains(player.GetKitchenObject().GetKitchenObjectSO()))
+            if (ammoVisuals.Any(ammo => ammo.ammoKitchenObjectSO == placedAmmoSO))
             {
                 player.GetKitchenObject().SetKitchenObjectParent(this);
 
@@ -85,38 +94,41 @@ public class TestBase : BaseCounter
                 {
                     StopCoroutine(firingCoroutine);
                 }
-                firingCoroutine = StartCoroutine(FiringCoroutine());
+                firingCoroutine = StartCoroutine(FiringCoroutine(placedAmmoSO));
             }
             
         }
     }
     
-    private IEnumerator FiringCoroutine()
+    private IEnumerator FiringCoroutine(KitchenObjectSO activeAmmoSO)
     {
-        // เปลี่ยนสถานะเป็น Firing
         currentState = BaseState.Firing;
-        if (firingSprite != null)
-        {
-            firingSprite.SetActive(true);
-        }
-        Debug.Log("State changed to: FIRING");
+        UpdateAmmoVisual(activeAmmoSO); // เปิด Sprite ที่ถูกต้อง
+        Debug.Log("State changed to: FIRING with " + activeAmmoSO.objectName);
 
-        // รอ 10 วินาที
         yield return new WaitForSeconds(10f);
 
-        // ทำลายไอเท็มที่วางอยู่
         if (HasKitchenObject())
         {
             GetKitchenObject().DestroySelf();
         }
 
-        // กลับสู่สถานะ Idle
         currentState = BaseState.Idle;
-        if (firingSprite != null)
-        {
-            firingSprite.SetActive(false);
-        }
+        UpdateAmmoVisual(null); // ปิด Sprite ทั้งหมด
         Debug.Log("State changed to: IDLE");
+    }
+    
+    private void UpdateAmmoVisual(KitchenObjectSO activeAmmoSO)
+    {
+        foreach (var ammo in ammoVisuals)
+        {
+            if (ammo.visualGameObject != null)
+            {
+                // ถ้า SO ของกระสุนตรงกับที่ใช้งานอยู่ ให้เปิด Sprite, ถ้าไม่ตรงให้ปิด
+                bool isActive = (activeAmmoSO != null && ammo.ammoKitchenObjectSO == activeAmmoSO);
+                ammo.visualGameObject.SetActive(isActive);
+            }
+        }
     }
 
     void UpdateTarget()
@@ -134,8 +146,6 @@ public class TestBase : BaseCounter
     
     void Attack()
     {
-        // Debug.Log("Attacking " + currentTarget.name);
-        
         TestEnemy enemyScript = currentTarget.GetComponent<TestEnemy>();
         if (enemyScript != null)
         {
