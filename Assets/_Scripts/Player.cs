@@ -24,6 +24,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
+    public SpriteRenderer spriteRenderer;
+    public Animator animator;
+
     public void Awake()
     {
         if (Instance != null)
@@ -154,6 +157,17 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
         float rotateSpeed = 10f;
         transform.forward += Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed); // For the rotation
+
+        if (!spriteRenderer.flipX && inputVector.x > 0) 
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (spriteRenderer.flipX && inputVector.x < 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+
+        animator.SetBool("isWalking", isWalking);
     }
 
     private void SetSelectedCounter(BaseCounter selectedCounter)
