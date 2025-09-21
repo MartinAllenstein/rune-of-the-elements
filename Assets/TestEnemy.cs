@@ -58,8 +58,7 @@ public class TestEnemy : MonoBehaviour
         
         return Physics.Raycast(rayStartPoint, transform.forward, obstacleCheckDistance, obstacleLayerMask);
     }
-
-    // ฟังก์ชันสำหรับรับความเสียหาย (เพื่อให้ TestBase เรียกใช้ได้)
+    
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
@@ -74,16 +73,16 @@ public class TestEnemy : MonoBehaviour
     private void Die()
     {
         //Debug.Log(gameObject.name + " has died.");
-        // เพิ่มเอฟเฟกต์ตอนตาย หรือทำลาย GameObject ทิ้ง
+        // เพิ่มเอฟเฟกต์ตอนตาย
         OnEnemyKilled?.Invoke(this);
         
         Destroy(gameObject);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Vector3 rayStartPoint = transform.position + Vector3.up * 0.5f;
-        Gizmos.DrawLine(rayStartPoint, rayStartPoint + transform.forward * obstacleCheckDistance);
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.yellow;
+    //     Vector3 rayStartPoint = transform.position + Vector3.up * 0.5f;
+    //     Gizmos.DrawLine(rayStartPoint, rayStartPoint + transform.forward * obstacleCheckDistance);
+    // }
 }
