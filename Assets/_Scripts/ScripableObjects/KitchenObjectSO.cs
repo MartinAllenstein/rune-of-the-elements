@@ -3,13 +3,14 @@ using UnityEngine;
 public enum IngredientType
 {
     None,
-    A,
-    B,
-    C,
-    D
+    Solid,
+    Fine,
+    Powder,
+    Liquid,
+    MagicLiquid
 }
 
-[CreateAssetMenu()]
+[CreateAssetMenu(menuName = "Scriptable Objects/KitchenObjectSO")]
 public class KitchenObjectSO : ScriptableObject
 {
     public Transform prefab;
@@ -17,13 +18,3 @@ public class KitchenObjectSO : ScriptableObject
     public string objectName;
     public IngredientType ingredientType;
 }
-
-
-
-// [CreateAssetMenu()]
-// public class KitchenObjectSO : ScriptableObject
-// {
-//     public Transform prefab;
-//     public Sprite sprite;
-//     public string objectName;
-// }

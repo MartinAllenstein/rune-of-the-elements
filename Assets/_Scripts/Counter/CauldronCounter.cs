@@ -88,7 +88,7 @@ public class CauldronCounter : BaseCounter
                         AddIngredient(player);
                         break;
                     case State.Hot:
-                        if (kitchenObjectSO.ingredientType != IngredientType.A && kitchenObjectSO.ingredientType != IngredientType.B)
+                        if (kitchenObjectSO.ingredientType != IngredientType.Liquid && kitchenObjectSO.ingredientType != IngredientType.MagicLiquid)
                         {
                             AddIngredient(player);
                         }
@@ -98,7 +98,7 @@ public class CauldronCounter : BaseCounter
                         }
                         break;
                     case State.Cold:
-                        if (kitchenObjectSO.ingredientType != IngredientType.C && kitchenObjectSO.ingredientType != IngredientType.D)
+                        if (kitchenObjectSO.ingredientType != IngredientType.Solid)
                         {
                             AddIngredient(player);
                         }
