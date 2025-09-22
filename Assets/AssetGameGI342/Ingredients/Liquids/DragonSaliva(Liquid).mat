@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Liquid
+  m_Name: DragonSaliva(Liquid)
   m_Shader: {fileID: -6465566751694194690, guid: 609dbe2d99d0f224db6ba5f97f3cb2cb, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -38,14 +38,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 0.586
+    - _Fill: 0.56
+    - _FresnelPower: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _WobbleX: 0
     - _WobbleZ: 0
     m_Colors:
-    - _SideColor: {r: 0.30054384, g: 0.60382754, b: 0.2581829, a: 1}
-    - _TopColor: {r: 0.27889434, g: 0.46778384, b: 0.2462014, a: 1}
+    - _FresnelColor: {r: 0.7924528, g: 0.063545756, b: 0.063545756, a: 1}
+    - _SideColor: {r: 0.754717, g: 0.014196885, b: 0, a: 1}
+    - _TopColor: {r: 0.6981132, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1137614837216864984

@@ -8,7 +8,10 @@ public class SelectedCounterVisual : MonoBehaviour
     [SerializeField] private GameObject[] visualGameObjectArray;
     private void Start()
     {
-        Player.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged; 
+        if (Player.Instance != null)
+        {
+            Player.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        }
     }
     private void Player_OnSelectedCounterChanged(object sender, Player.OnSelectedCounterChangedEventArgs e)
     {
@@ -26,7 +29,10 @@ public class SelectedCounterVisual : MonoBehaviour
     {
         foreach (GameObject visualGameObject in visualGameObjectArray)
         {
-            visualGameObject.SetActive(true);
+            if (visualGameObject != null)
+            {
+                visualGameObject.SetActive(true);
+            }
         }
     }
 
@@ -35,6 +41,14 @@ public class SelectedCounterVisual : MonoBehaviour
         foreach (GameObject visualGameObject in visualGameObjectArray)
         {
             visualGameObject.SetActive(false);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Player.Instance != null)
+        {
+            Player.Instance.OnSelectedCounterChanged -= Player_OnSelectedCounterChanged;
         }
     }
     

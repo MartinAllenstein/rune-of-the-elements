@@ -217,6 +217,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   maxHealth: 500
+  resistances: []
 --- !u!54 &7345473577983620570
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -149,7 +149,7 @@ public class TestBase : BaseCounter
         TestEnemy enemyScript = currentTarget.GetComponent<TestEnemy>();
         if (enemyScript != null)
         {
-            enemyScript.TakeDamage(damage);
+            //enemyScript.TakeDamage(damage);
         }
     }
 

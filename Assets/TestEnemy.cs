@@ -1,9 +1,18 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TestEnemy : MonoBehaviour
 {
     public static event Action<TestEnemy> OnEnemyKilled;
+    
+    [System.Serializable]
+    public class DamageResistance
+    {
+        public DamageTypeSO damageType;
+        [Range(-1f, 1f)] // -100% (Weakness) to 100% (Resistance)
+        public float resistancePercentage; 
+    }
     
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
@@ -12,6 +21,7 @@ public class TestEnemy : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private List<DamageResistance> resistances; // Damage Resistance List
     private float currentHealth;
 
     private Rigidbody rb;
@@ -54,16 +64,32 @@ public class TestEnemy : MonoBehaviour
     {
         // ยิง Raycast จากตำแหน่งของ Enemy ไปข้างหน้า
         // เรายกตำแหน่งเริ่มต้นของ Raycast ขึ้นมาเล็กน้อยเพื่อไม่ให้ยิงลงพื้น
-        Vector3 rayStartPoint = transform.position + Vector3.up * 0.5f; 
+        Vector3 rayStartPoint = transform.position + Vector3.right * 0.5f; 
         
         return Physics.Raycast(rayStartPoint, transform.forward, obstacleCheckDistance, obstacleLayerMask);
     }
     
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(float baseDamage, DamageTypeSO damageType)
     {
-        currentHealth -= damageAmount;
-        //Debug.Log(gameObject.name + " took " + damageAmount + " damage. Health is now " + currentHealth);
+        float multiplier = 1f;
 
+        foreach (var res in resistances)
+        {
+            if (res.damageType == damageType)
+            {
+                // นำค่า % ต้านทานมาคำนวณเป็นตัวคูณ
+                // เช่น ต้านทาน 20% (0.2) -> multiplier = 0.8
+                // แพ้ทาง 30% (-0.3) -> multiplier = 1.3
+                multiplier = 1 - res.resistancePercentage;
+                break;
+            }
+        }
+        
+        float finalDamage = baseDamage * multiplier;
+        currentHealth -= finalDamage;
+
+        Debug.LogFormat("{0} took {1} ({2} base) {3} damage. Health: {4}", gameObject.name, finalDamage, baseDamage, damageType.name, currentHealth);
+        
         if (currentHealth <= 0)
         {
             Die();
@@ -82,7 +108,7 @@ public class TestEnemy : MonoBehaviour
     // private void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.yellow;
-    //     Vector3 rayStartPoint = transform.position + Vector3.up * 0.5f;
+    //     Vector3 rayStartPoint = transform.position + Vector3.right * 0.5f;
     //     Gizmos.DrawLine(rayStartPoint, rayStartPoint + transform.forward * obstacleCheckDistance);
     // }
 }

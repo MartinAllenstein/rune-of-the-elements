@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a65cf3e52d5d8e49907b482b86505a8, type: 3}
-  m_Name: Wave 2
+  m_Script: {fileID: 11500000, guid: abc331586ede4224f9512d39dcd873e8, type: 3}
+  m_Name: Lightning
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 9082870514267642486, guid: dbcd7cc8e69632147826b742a6ea7292, type: 3}
-  enemyCount: 6
-  spawnInterval: 3

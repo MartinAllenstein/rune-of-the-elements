@@ -211,8 +211,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6615ef9f7fb550047b794cc2c9a769c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
   moveSpeed: 3
+  obstacleCheckDistance: 0.6
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  maxHealth: 100
+  resistances:
+  - damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}
+    resistancePercentage: -1
 --- !u!54 &7345473577983620570
 Rigidbody:
   m_ObjectHideFlags: 0
