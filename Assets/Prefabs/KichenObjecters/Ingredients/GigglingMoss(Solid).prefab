@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -6188334106625380463}
   - component: {fileID: -7571804543333855147}
   m_Layer: 0
-  m_Name: BasiliskEye(Solid)
+  m_Name: GigglingMoss(Solid)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 696a5880a0299fa48942809fe942af25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kitchenObjectSO: {fileID: 11400000, guid: ba01f71df7868ff42bb5002f21dc1d2f, type: 2}
+  kitchenObjectSO: {fileID: 11400000, guid: 5e9fdc41b19e55d4887578f256a94451, type: 2}
 --- !u!114 &-7571804543333855147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3bfaae74ce6b81040b2a0f508cb3ab3d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 387137f826ee52248aaeb8f337a9f228, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
