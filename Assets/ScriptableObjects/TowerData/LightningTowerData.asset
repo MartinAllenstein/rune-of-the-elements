@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LightningTowerData
   m_EditorClassIdentifier: 
   towerName: Lightning Tower
-  towerPrefab: {fileID: 4312790372117518317, guid: 17c5cc83cd9a7ef47a0394d225c38ac0, type: 3}
-  damage: 100
+  towerPrefab: {fileID: 7625084149284486248, guid: 0f5abff1fd3c9af44aa51ea44f7cbf24, type: 3}
+  damage: 20
   damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}
   fireRate: 2
   attackRadius: 10

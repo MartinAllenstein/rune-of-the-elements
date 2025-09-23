@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1682111874933130499, guid: 1aa245e67fe5f524b989a4840710bdbc, type: 3}
   sprite: {fileID: 21300000, guid: 0ee2a7ea86e282d4a9b12e4933982442, type: 3}
-  objectName: MandrakeRoot(Solid)
+  objectName: MandrakeRoot (Solid)
   ingredientType: 1

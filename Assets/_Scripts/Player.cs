@@ -27,6 +27,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
+    private const string IS_WALKING = "isWalking";
+
     public void Awake()
     {
         if (Instance != null)
@@ -167,7 +169,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             spriteRenderer.flipX = false;
         }
 
-        animator.SetBool("isWalking", isWalking);
+        animator.SetBool(IS_WALKING, isWalking);
     }
 
     private void SetSelectedCounter(BaseCounter selectedCounter)

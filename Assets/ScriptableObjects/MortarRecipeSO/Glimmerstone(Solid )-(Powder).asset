@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488e0204c5c830d47a123b26e181adfd, type: 3}
+  m_Name: Glimmerstone(Solid )-(Powder)
+  m_EditorClassIdentifier: 
+  input: {fileID: 11400000, guid: 1f85af77a3bbb1a4db595bcd300669a3, type: 2}
+  output: {fileID: 11400000, guid: e66b8a1bc0854da438e9b68f929d60b6, type: 2}
+  grindingTimerMax: 3

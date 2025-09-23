@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CauldronCounter : BaseCounter
 {
@@ -23,8 +22,7 @@ public class CauldronCounter : BaseCounter
     private float stateChangeTimer;
     private const float STATE_CHANGE_INTERVAL = 10f;
     private List<KitchenObjectSO> kitchenObjectSOList = new List<KitchenObjectSO>();
-    private float cookHoldTimer;
-    private const float COOK_HOLD_DURATION = 2f;
+    
 
     private void Start()
     {
@@ -41,21 +39,14 @@ public class CauldronCounter : BaseCounter
         //     currentState = (State)(((int)currentState + 1) % 3);
         //     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = currentState });
         // }
-
-        if (Keyboard.current.tKey.isPressed)
-        {
-            cookHoldTimer += Time.deltaTime;
-            if (cookHoldTimer >= COOK_HOLD_DURATION)
-            {
-                cookHoldTimer = 0;
-                Cook();
-            }
-        }
-        else
-        {
-            cookHoldTimer = 0;
-        }
+        
     }
+    
+    public override void InteractAlternate(Player player)
+    {
+        Cook();
+    }
+    
     public override void Interact(Player player)
     {
         // If there's already a cooked item on the counter
@@ -124,7 +115,7 @@ public class CauldronCounter : BaseCounter
     private void Cook()
     {
         // Only cook if the cauldron is empty (no previous output sitting there)
-        if (!HasKitchenObject())
+        if (kitchenObjectSOList.Count > 0 && !HasKitchenObject())
         {
             if (CauldronManager.Instance.TryGetRecipe(kitchenObjectSOList, out var recipe))
             {

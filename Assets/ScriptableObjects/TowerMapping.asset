@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: TowerMapping
   m_EditorClassIdentifier: 
   towerMappings:
-  - elementType: {fileID: 11400000, guid: d4f8c5545b37e9e4f98a15d0e11f5629, type: 2}
+  - elementType: {fileID: 11400000, guid: d99d4428208627848979e3b76e95ea14, type: 2}
     resultingTower: {fileID: 11400000, guid: a43f547842fed2143b599c07f508198e, type: 2}
+  - elementType: {fileID: 11400000, guid: a4ee86e00a00f90489b5896d1c98a126, type: 2}
+    resultingTower: {fileID: 11400000, guid: 3873a4eea9d9f1d4bb285306abfc1ad2, type: 2}

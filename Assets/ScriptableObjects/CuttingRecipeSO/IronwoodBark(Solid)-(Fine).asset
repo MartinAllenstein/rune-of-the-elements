@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca9568132cbf524fa4fbb9a17f40877, type: 3}
+  m_Name: IronwoodBark(Solid)-(Fine)
+  m_EditorClassIdentifier: 
+  input: {fileID: 11400000, guid: e8a6c298e354ca74ba98f1d10a5eb8c7, type: 2}
+  output: {fileID: 11400000, guid: 7d471e33e7d17c840be5c6117b2f95b8, type: 2}
+  cuttingProgressMax: 5
