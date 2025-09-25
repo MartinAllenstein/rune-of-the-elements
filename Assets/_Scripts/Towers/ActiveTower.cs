@@ -8,6 +8,7 @@ public class ActiveTower : MonoBehaviour
     [SerializeField] private TowerDataSO towerData; // This tower
     [SerializeField] private GameObject emptyTowerPrefab;
     [SerializeField] private float activeDuration = 10f;
+    [SerializeField] private Transform firePoint;
 
     [Header("Targeting")]
     private Transform currentTarget;
@@ -16,7 +17,7 @@ public class ActiveTower : MonoBehaviour
 
     private void Start()
     {
-        // ตั้งค่ารัศมีตามข้อมูลจาก TowerDataSO
+        // range from TowerDataSO
         SphereCollider rangeCollider = GetComponent<SphereCollider>();
         if (rangeCollider != null)
         {
@@ -50,16 +51,23 @@ public class ActiveTower : MonoBehaviour
     
     void Attack()
     {
-        TestEnemy enemyScript = currentTarget.GetComponent<TestEnemy>();
-        if (enemyScript != null)
+        if (currentTarget == null) return;
+        
+        // Object Pooler
+        GameObject projectileGO = ObjectPooler.Instance.SpawnFromPool(towerData.projectilePoolTag, firePoint.position, firePoint.rotation);
+
+        if (projectileGO != null)
         {
-            // send Element to Enemy
-            enemyScript.TakeDamage(towerData.damage, towerData.damageType);
+            Projectile projectile = projectileGO.GetComponent<Projectile>();
+            if (projectile != null)
+            {
+                projectile.Seek(currentTarget, towerData);
+            }
         }
     }
     void UpdateTarget()
     {
-        // ถ้าเป้าหมายปัจจุบันหายไป (เช่น ตาย หรือออกจากระยะ)
+        // ถ้าเป้าหมายปัจจุบันหายไป
         if (currentTarget == null)
         {
             // ลบศัตรูที่ตายแล้วออกจากลิสต์
@@ -76,7 +84,7 @@ public class ActiveTower : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // ตรวจสอบว่าสิ่งที่เข้ามาคือศัตรูหรือไม่
-        if (other.GetComponent<TestEnemy>() != null)
+        if (other.GetComponent<Enemy>() != null)
         {
             // เพิ่มศัตรูเข้าลิสต์ถ้ายังไม่มี
             if (!enemiesInRange.Contains(other.transform))
@@ -89,7 +97,7 @@ public class ActiveTower : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         // ตรวจสอบว่าสิ่งที่ออกไปคือศัตรูหรือไม่
-        if (other.GetComponent<TestEnemy>() != null)
+        if (other.GetComponent<Enemy>() != null)
         {
             // นำศัตรูออกจากลิสต์
             enemiesInRange.Remove(other.transform);

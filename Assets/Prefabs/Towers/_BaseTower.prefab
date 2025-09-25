@@ -56,7 +56,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4688531255096756604}
   m_Layer: 0
-  m_Name: CounterTopPoint
+  m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,7 +71,7 @@ Transform:
   m_GameObject: {fileID: 4247598629851825974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.61, z: -1.22}
+  m_LocalPosition: {x: 0, y: 2.289, z: 0.137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -178,6 +178,7 @@ MonoBehaviour:
   towerData: {fileID: 0}
   emptyTowerPrefab: {fileID: 4312790372117518317, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
   activeDuration: 10
+  firePoint: {fileID: 4688531255096756604}
 --- !u!135 &1579543729279127593
 SphereCollider:
   m_ObjectHideFlags: 0

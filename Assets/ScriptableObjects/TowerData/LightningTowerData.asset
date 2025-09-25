@@ -18,3 +18,5 @@ MonoBehaviour:
   damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}
   fireRate: 2
   attackRadius: 10
+  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
+  projectilePoolTag: LightningBolt

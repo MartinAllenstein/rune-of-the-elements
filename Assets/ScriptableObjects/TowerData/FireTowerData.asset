@@ -18,3 +18,5 @@ MonoBehaviour:
   damageType: {fileID: 11400000, guid: 59b5021de367a4444b8b6c9dbed00f5b, type: 2}
   fireRate: 2
   attackRadius: 10
+  projectilePrefab: {fileID: 8902273583184186908, guid: 8c80ef42d5a8d0b4bad0934e01aee4a7, type: 3}
+  projectilePoolTag: FireBolt

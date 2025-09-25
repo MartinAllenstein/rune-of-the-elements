@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Water-RuneStone
   m_EditorClassIdentifier: 
   prefab: {fileID: 1682111874933130499, guid: 902eb54ab17e363448e16b01a50a2550, type: 3}
-  sprite: {fileID: 21300000, guid: 0937ff1e6a23d3243877f34a49931c2a, type: 3}
+  sprite: {fileID: 21300000, guid: 936e218521753f747baf8bdd222aa664, type: 3}
   objectName: Water RuneStone
   ingredientType: 0

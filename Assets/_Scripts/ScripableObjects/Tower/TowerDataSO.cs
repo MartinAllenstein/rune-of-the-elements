@@ -12,4 +12,8 @@ public class TowerDataSO : ScriptableObject
     public DamageTypeSO damageType;
     public float fireRate;
     public float attackRadius;
+    
+    [Header("Projectile")]
+    public GameObject projectilePrefab;
+    public string projectilePoolTag; // Tag for Object Pooler
 }
