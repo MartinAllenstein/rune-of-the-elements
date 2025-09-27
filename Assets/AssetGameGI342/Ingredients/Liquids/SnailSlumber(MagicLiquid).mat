@@ -60,7 +60,7 @@ Material:
     m_Colors:
     - _FresnelColor: {r: 0.5654477, g: 0.24056602, b: 1, a: 1}
     - _SideColor: {r: 0.018195108, g: 0, b: 1.9686276, a: 1}
-    - _TopColor: {r: 0.14631557, g: 0, b: 1, a: 1}
+    - _TopColor: {r: 0, g: 0.016809464, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1414561446810260966
