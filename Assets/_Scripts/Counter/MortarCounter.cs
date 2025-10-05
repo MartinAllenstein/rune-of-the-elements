@@ -32,7 +32,7 @@ public class MortarCounter : BaseCounter, IHasProgress
     private void GameInput_OnInteractAlternateActionStarted(object sender, EventArgs e)
     {
         // Start Grinding
-        if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
+        if (Player.Instance.GetSelectedCounter() == this && HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
         {
             isGrinding = true;
             currentRecipe = GetMortarRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
@@ -69,6 +69,10 @@ public class MortarCounter : BaseCounter, IHasProgress
                 grindingTimer = 0f;
                 OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0f });
             }
+        }
+        else
+        {
+            return;
         }
     }
 

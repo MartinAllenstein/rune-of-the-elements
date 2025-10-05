@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa7d486eff896419ee7740a3a0e3d0, type: 3}
+  m_Name: WindTowerData
+  m_EditorClassIdentifier: 
+  towerName: Wind Tower
+  towerPrefab: {fileID: 7113302821176625787, guid: ad707529623a0d34a8741d525f6129b3, type: 3}
+  damage: 20
+  damageType: {fileID: 11400000, guid: 98fcdda784f36cc478ef26c5dac2faa1, type: 2}
+  fireRate: 2
+  attackRadius: 10
+  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
+  projectilePoolTag: LightningBolt

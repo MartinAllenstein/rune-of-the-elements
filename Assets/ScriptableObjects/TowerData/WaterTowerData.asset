@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa7d486eff896419ee7740a3a0e3d0, type: 3}
+  m_Name: WaterTowerData
+  m_EditorClassIdentifier: 
+  towerName: Water Tower
+  towerPrefab: {fileID: 5295056210863721097, guid: 91d2a572b4e449643afc9c606baf1ac0, type: 3}
+  damage: 20
+  damageType: {fileID: 11400000, guid: b495ea121eec0b946b238333a8a3ea36, type: 2}
+  fireRate: 2
+  attackRadius: 10
+  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
+  projectilePoolTag: LightningBolt

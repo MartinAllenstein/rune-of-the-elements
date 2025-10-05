@@ -11,6 +11,7 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnInteractAlternateAction;
     public event EventHandler OnPauseAction;
     
+    // MortarCounter Event
     public event EventHandler OnInteractAlternateActionStarted;
     public event EventHandler OnInteractAlternateActionCanceled;
     
@@ -23,6 +24,9 @@ public class GameInput : MonoBehaviour
         Interact,
         InteractAlternate,
         Pause,
+        Gamepad_Interact,
+        Gamepad_InteractAlternate,
+        Gamepad_Pause
     }
     
     
@@ -31,6 +35,19 @@ public class GameInput : MonoBehaviour
     {
         Instance = this;
         
+        InitializeInputActions();
+        
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
+        
+        playerInputActions.Dispose();
+    }
+    
+    private void InitializeInputActions()
+    {
         playerInputActions = new InputSystem_Actions();
         
         if (PlayerPrefs.HasKey(PLAYER_PREFS_BINDINGS))
@@ -40,25 +57,25 @@ public class GameInput : MonoBehaviour
         
         playerInputActions.Player.Enable();
 
+        SubscribeEvents(); // sub to All Events
+    }
+    
+    private void SubscribeEvents()
+    {
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
         playerInputActions.Player.Pause.performed += Pause_performed;
-        
         playerInputActions.Player.InteractAlternate.started += InteractAlternate_started;
         playerInputActions.Player.InteractAlternate.canceled += InteractAlternate_canceled;
-        
     }
-
-    private void OnDestroy()
+    
+    private void UnsubscribeEvents()
     {
         playerInputActions.Player.Interact.performed -= Interact_performed;
         playerInputActions.Player.InteractAlternate.performed -= InteractAlternate_performed;
         playerInputActions.Player.Pause.performed -= Pause_performed;
-        
         playerInputActions.Player.InteractAlternate.started -= InteractAlternate_started;
         playerInputActions.Player.InteractAlternate.canceled -= InteractAlternate_canceled;
-        
-        playerInputActions.Dispose();
     }
 
     private void Pause_performed(InputAction.CallbackContext obj)
@@ -113,16 +130,22 @@ public class GameInput : MonoBehaviour
                 return playerInputActions.Player.InteractAlternate.bindings[0].ToDisplayString();
             case Binding.Pause:
                 return playerInputActions.Player.Pause.bindings[0].ToDisplayString();
+            case Binding.Gamepad_Interact:
+                return playerInputActions.Player.Interact.bindings[1].ToDisplayString();
+            case Binding.Gamepad_InteractAlternate:
+                return playerInputActions.Player.InteractAlternate.bindings[1].ToDisplayString();
+            case Binding.Gamepad_Pause:
+                return playerInputActions.Player.Pause.bindings[1].ToDisplayString();
             
         }
     }
 
     public void RebuildBindings(Binding bindings, Action onActionRebound)
     {
+        playerInputActions.Player.Disable();
+        
         InputAction inputAction;
         int bindingIndex;
-        
-        playerInputActions.Disable();
 
         switch (bindings)
         {
@@ -155,17 +178,33 @@ public class GameInput : MonoBehaviour
                 inputAction = playerInputActions.Player.Pause;
                 bindingIndex = 0;
                 break;
+            case Binding.Gamepad_Interact:
+                inputAction = playerInputActions.Player.Interact;
+                bindingIndex = 1;
+                break;
+            case Binding.Gamepad_InteractAlternate:
+                inputAction = playerInputActions.Player.InteractAlternate;
+                bindingIndex = 1;
+                break;
+            case Binding.Gamepad_Pause:
+                inputAction = playerInputActions.Player.Pause;
+                bindingIndex = 1;
+                break;
         }
         
         inputAction.PerformInteractiveRebinding(bindingIndex)
             .OnComplete((callback) =>
             {
                 callback.Dispose();
-                playerInputActions.Player.Enable();
-                onActionRebound();
 
                 PlayerPrefs.SetString(PLAYER_PREFS_BINDINGS, playerInputActions.SaveBindingOverridesAsJson());
                 PlayerPrefs.Save();
+                
+                UnsubscribeEvents();
+                playerInputActions.Dispose();
+                InitializeInputActions();
+                
+                onActionRebound();
             })
             .Start();
     }

@@ -46,7 +46,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
     {
-        if (!GameManager.Instance.IsGamePlaying()) return;
+        //if (!GameManager.Instance.IsGamePlaying()) return; Can not interact if GameOver
         
         if (selectedCounter != null)
         {
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     // sub to Interact event
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
-        //if (!GameManager.Instance.IsGamePlaying()) return;****
+        //if (!GameManager.Instance.IsGamePlaying()) return; Can not interact if GameOver
 
         if (selectedCounter != null)
         {
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
             // Attempt only X movement
             Vector3 moveDirX = new Vector3(moveDirection.x, 0, 0).normalized;
-            canMove = moveDirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            canMove = (moveDirection.x < -0.5f || moveDirection.x > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
             if (canMove)
             {
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
                 // Attempt only Z movement
                 Vector3 moveDirZ = new Vector3(0, 0, moveDirection.z).normalized;
-                canMove = moveDirection.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                canMove = (moveDirection.z < -0.5f || moveDirection.z > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
                 if (canMove)
                 {
@@ -181,6 +181,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         this.selectedCounter = selectedCounter;
         
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });
+    }
+    
+    public BaseCounter GetSelectedCounter() {
+        return selectedCounter;
     }
 
     public Transform GetKitchenObjectFollowTransform()

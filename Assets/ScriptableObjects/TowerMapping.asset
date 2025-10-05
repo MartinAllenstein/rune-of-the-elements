@@ -13,7 +13,17 @@ MonoBehaviour:
   m_Name: TowerMapping
   m_EditorClassIdentifier: 
   towerMappings:
-  - elementType: {fileID: 11400000, guid: d99d4428208627848979e3b76e95ea14, type: 2}
-    resultingTower: {fileID: 11400000, guid: a43f547842fed2143b599c07f508198e, type: 2}
+  - elementType: {fileID: 11400000, guid: ddb1f217f1a6ef8479ce23f7bdfee199, type: 2}
+    resultingTower: {fileID: 11400000, guid: 3dec7d92a30cf934f9d55858da00085a, type: 2}
+  - elementType: {fileID: 11400000, guid: b6235b8e66013ca4690137d4ac932e91, type: 2}
+    resultingTower: {fileID: 11400000, guid: 4b7acd4268e563f48b6b088e13dcaa4d, type: 2}
+  - elementType: {fileID: 11400000, guid: 34137de44dfe03942975f256cb67cd28, type: 2}
+    resultingTower: {fileID: 11400000, guid: cf2daf16da5629a428895182e9434bf0, type: 2}
   - elementType: {fileID: 11400000, guid: a4ee86e00a00f90489b5896d1c98a126, type: 2}
     resultingTower: {fileID: 11400000, guid: 3873a4eea9d9f1d4bb285306abfc1ad2, type: 2}
+  - elementType: {fileID: 11400000, guid: d99d4428208627848979e3b76e95ea14, type: 2}
+    resultingTower: {fileID: 11400000, guid: a43f547842fed2143b599c07f508198e, type: 2}
+  - elementType: {fileID: 11400000, guid: ed4186a33a54e364a9a112c11bded323, type: 2}
+    resultingTower: {fileID: 11400000, guid: fb925ecaa0d29bb4cb47989b2f69a2e3, type: 2}
+  - elementType: {fileID: 11400000, guid: e0a95235b5e7b644981f4b17d7fc4e2e, type: 2}
+    resultingTower: {fileID: 11400000, guid: 227a86c183d24ba428b5105aae8f4ae4, type: 2}
