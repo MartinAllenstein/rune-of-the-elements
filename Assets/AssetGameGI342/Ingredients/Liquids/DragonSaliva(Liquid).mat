@@ -59,8 +59,8 @@ Material:
     - _WobbleZ: 0
     m_Colors:
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SideColor: {r: 7.999999, g: 6.08648, b: 0, a: 1}
-    - _TopColor: {r: 2, g: 1.658239, b: 0.028301835, a: 1}
+    - _SideColor: {r: 7.5570474, g: 0.10693916, b: 1.862199, a: 1}
+    - _TopColor: {r: 1.8640718, g: 0.14947748, b: 1.2803802, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &1137614837216864984
