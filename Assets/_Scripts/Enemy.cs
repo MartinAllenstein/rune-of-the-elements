@@ -23,9 +23,16 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private List<DamageResistance> resistances; // Damage Resistance List
     private float currentHealth;
+    
+    [Header("Attack Settings")]
+    [SerializeField] private float attackDamage = 50f;
+    [SerializeField] private float attackRate = 1f;
+    [SerializeField] private float attackDistance = 1.5f;
+    private float attackCountdown = 0f;
 
     private Rigidbody rb;
     private bool isWalking = true;
+    private Transform targetBase;
 
     private void Awake()
     {
@@ -37,24 +44,63 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    private void Start()
+    {
+        if (TheBase.Instance != null)
+        {
+            targetBase = TheBase.Instance.transform;
+        }
+    }
+
     private void FixedUpdate()
     {
+        if (targetBase == null) return;
+        
         HandleMovement();
     }
 
-    private void HandleMovement()
+    private void Update()
     {
-        if (IsObstacleInFront())
+        if (targetBase == null) return;
+        
+        attackCountdown -= Time.deltaTime;
+        
+        // Check Attack Distance
+        if (Vector3.Distance(transform.position, targetBase.position) <= attackDistance)
         {
+            
             isWalking = false;
+            
+            if (attackCountdown <= 0f)
+            {
+                AttackBase();
+                attackCountdown = 1f / attackRate;
+            }
         }
         else
         {
             isWalking = true;
-        }
+        }    
+    }
+
+    private void HandleMovement()
+    {
+        // if (IsObstacleInFront())
+        // {
+        //     isWalking = false;
+        // }
+        // else
+        // {
+        //     isWalking = true;
+        // }
 
         if (isWalking)
         {
+            // Go for TheBase
+            Vector3 direction = (targetBase.position - rb.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, Time.fixedDeltaTime * 5f));
+
             Vector3 newPosition = rb.position + transform.right * moveSpeed * Time.fixedDeltaTime;
             rb.MovePosition(newPosition);
         }
@@ -67,6 +113,13 @@ public class Enemy : MonoBehaviour
         Vector3 rayStartPoint = transform.position + Vector3.right * 0.5f; 
         
         return Physics.Raycast(rayStartPoint, transform.forward, obstacleCheckDistance, obstacleLayerMask);
+    }
+    
+    private void AttackBase()
+    {
+        TheBase.Instance.TakeDamage(attackDamage);
+        Debug.Log(gameObject.name + " attacks the base!");
+        // อาจจะเพิ่ม Animation การโจมตีตรงนี้
     }
     
     public void TakeDamage(float baseDamage, DamageTypeSO damageType)
@@ -88,7 +141,7 @@ public class Enemy : MonoBehaviour
         float finalDamage = baseDamage * multiplier;
         currentHealth -= finalDamage;
 
-        Debug.LogFormat("{0} took {1} ({2} base) {3} damage. Health: {4}", gameObject.name, finalDamage, baseDamage, damageType.name, currentHealth);
+        //Debug.LogFormat("{0} took {1} ({2} base) {3} damage. Health: {4}", gameObject.name, finalDamage, baseDamage, damageType.name, currentHealth);
         
         if (currentHealth <= 0)
         {
@@ -99,7 +152,7 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         //Debug.Log(gameObject.name + " has died.");
-        // เพิ่มเอฟเฟกต์ตอนตาย
+        // Die Efx
         OnEnemyKilled?.Invoke(this);
         
         Destroy(gameObject);
