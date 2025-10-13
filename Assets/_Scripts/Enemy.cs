@@ -118,8 +118,7 @@ public class Enemy : MonoBehaviour
     private void AttackBase()
     {
         TheBase.Instance.TakeDamage(attackDamage);
-        Debug.Log(gameObject.name + " attacks the base!");
-        // อาจจะเพิ่ม Animation การโจมตีตรงนี้
+        // Attack Animation 
     }
     
     public void TakeDamage(float baseDamage, DamageTypeSO damageType)
@@ -140,8 +139,6 @@ public class Enemy : MonoBehaviour
         
         float finalDamage = baseDamage * multiplier;
         currentHealth -= finalDamage;
-
-        //Debug.LogFormat("{0} took {1} ({2} base) {3} damage. Health: {4}", gameObject.name, finalDamage, baseDamage, damageType.name, currentHealth);
         
         if (currentHealth <= 0)
         {

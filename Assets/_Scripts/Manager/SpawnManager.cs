@@ -31,7 +31,17 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(StartNextWave());
+        GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
+    }
+    
+    private void GameManager_OnStateChanged(object sender, EventArgs e)
+    {
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            StartCoroutine(StartNextWave());
+            
+            GameManager.Instance.OnStateChanged -= GameManager_OnStateChanged;
+        }
     }
 
     private void HandleEnemyKilled(Enemy enemy)

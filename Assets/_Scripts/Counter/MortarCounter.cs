@@ -14,18 +14,16 @@ public class MortarCounter : BaseCounter, IHasProgress
 
     private void Start()
     {
-        GameInput gameInput = FindAnyObjectByType<GameInput>();
-        gameInput.OnInteractAlternateActionStarted += GameInput_OnInteractAlternateActionStarted;
-        gameInput.OnInteractAlternateActionCanceled += GameInput_OnInteractAlternateActionCanceled;
+        GameInput.Instance.OnInteractAlternateActionStarted += GameInput_OnInteractAlternateActionStarted;
+        GameInput.Instance.OnInteractAlternateActionCanceled += GameInput_OnInteractAlternateActionCanceled;
     }
 
     private void OnDestroy()
     {
-        GameInput gameInput = FindAnyObjectByType<GameInput>();
-        if (gameInput != null)
+        if (GameInput.Instance != null)
         {
-            gameInput.OnInteractAlternateActionStarted -= GameInput_OnInteractAlternateActionStarted;
-            gameInput.OnInteractAlternateActionCanceled -= GameInput_OnInteractAlternateActionCanceled;
+            GameInput.Instance.OnInteractAlternateActionStarted -= GameInput_OnInteractAlternateActionStarted;
+            GameInput.Instance.OnInteractAlternateActionCanceled -= GameInput_OnInteractAlternateActionCanceled;
         }
     }
 

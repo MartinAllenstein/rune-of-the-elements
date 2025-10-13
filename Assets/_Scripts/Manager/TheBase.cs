@@ -5,6 +5,7 @@ public class TheBase : MonoBehaviour
 {
     public static TheBase Instance { get; private set; }
 
+    public event EventHandler OnHealthChanged;
     public static event EventHandler OnBaseDestroyed;
 
     [SerializeField] private float maxHealth = 1000f;
@@ -19,8 +20,9 @@ public class TheBase : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
-        Debug.Log("Base took damage! Health is now: " + currentHealth);
-
+        
+        OnHealthChanged?.Invoke(this, EventArgs.Empty);
+        
         if (currentHealth <= 0)
         {
             currentHealth = 0;

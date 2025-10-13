@@ -24,7 +24,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
-    public SpriteRenderer spriteRenderer;
+    [SerializeField] private Transform playerVisual; 
+    //public SpriteRenderer spriteRenderer;
     public Animator animator;
 
     private const string IS_WALKING = "isWalking";
@@ -34,8 +35,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         if (Instance != null)
         {
             Destroy(gameObject);
+            return;
         }
         Instance = this;
+
+        if (playerVisual == null)
+        {
+            playerVisual = transform;
+        }
     }
 
     private void Start()
@@ -46,7 +53,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
     {
-        //if (!GameManager.Instance.IsGamePlaying()) return; Can not interact if GameOver
+        if (!GameManager.Instance.IsGamePlaying()) return; //Can not interact if Not playing
         
         if (selectedCounter != null)
         {
@@ -57,7 +64,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     // sub to Interact event
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
-        //if (!GameManager.Instance.IsGamePlaying()) return; Can not interact if GameOver
+        if (!GameManager.Instance.IsGamePlaying()) return; //Can not interact if Not playing
 
         if (selectedCounter != null)
         {
@@ -164,13 +171,15 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         float rotateSpeed = 10f;
         transform.forward += Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed); // For the rotation
 
-        if (!spriteRenderer.flipX && inputVector.x > 0) 
+        
+        // Sprite flip
+        if (inputVector.x > 0)
         {
-            spriteRenderer.flipX = true;
+            playerVisual.localScale = new Vector3(-1, 1, 1);
         }
-        else if (spriteRenderer.flipX && inputVector.x < 0)
+        else if (inputVector.x < 0)
         {
-            spriteRenderer.flipX = false;
+            playerVisual.localScale = new Vector3(1, 1, 1);
         }
 
         animator.SetBool(IS_WALKING, isWalking);

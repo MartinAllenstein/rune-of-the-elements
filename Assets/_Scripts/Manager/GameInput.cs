@@ -34,6 +34,10 @@ public class GameInput : MonoBehaviour
     private InputSystem_Actions playerInputActions;
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
         Instance = this;
         
         InitializeInputActions();

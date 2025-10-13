@@ -1,8 +1,26 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
+    
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private Button restartButton;
+
+    private void Awake()
+    {
+        mainMenuButton.onClick.AddListener(() =>
+        {
+            Loader.Load(Loader.Scene.MainMenuScene);
+        });
+        
+        restartButton.onClick.AddListener(() =>
+        {
+            Loader.ReloadCurrentLevel();
+        });
+    }
+    
     
     private void Start()
     {
@@ -11,6 +29,7 @@ public class GameOverUI : MonoBehaviour
         Hide();
     }
 
+    
     private void GameManager_OnStateChanged(object sender, EventArgs e)
     {
         if (GameManager.Instance.IsGameOver())
