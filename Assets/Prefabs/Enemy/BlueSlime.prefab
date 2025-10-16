@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1.5
+  sR: {fileID: 6908417879843041253}
   maxHealth: 30
   resistances:
   - damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}

@@ -18,6 +18,7 @@ public class Enemies : MonoBehaviour
     private int currentWaypoint = 0;
     private Transform targetWaypoint;
     private WaypointPath path;
+    public SpriteRenderer sR;
 
     [Header("Health Settings")]
     public float maxHealth = 100f;
@@ -56,15 +57,23 @@ public class Enemies : MonoBehaviour
 
         MoveAlongPath();
     }
-
     private void MoveAlongPath()
     {
         if (targetWaypoint == null) return;
 
         Vector3 dir = (targetWaypoint.position - transform.position).normalized;
+
+        // Move toward target
         transform.position += dir * moveSpeed * Time.deltaTime;
         transform.forward = Vector3.Lerp(transform.forward, dir, Time.deltaTime * 10f);
 
+        //Flip sprite based on movement direction (X-axis)
+        if (dir.x > 0.05f)
+            sR.flipX = true; // Facing right
+        else if (dir.x < -0.05f)
+            sR.flipX = false; // Facing left
+
+        // Check if close enough to next waypoint
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
             currentWaypoint++;
