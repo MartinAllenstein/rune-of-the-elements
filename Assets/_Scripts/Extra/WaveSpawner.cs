@@ -1,14 +1,27 @@
 using UnityEngine;
 using System.Collections;
+using System;
+
+[System.Serializable]
+public class EnemyGroup
+{
+    public GameObject enemyPrefab;
+    public int count = 5;
+    public float spawnInterval = 1f;
+}
 
 [System.Serializable]
 public class EnemyWave
 {
-    public GameObject enemyPrefab;
-    public int count;
-    public float spawnInterval;
+    public string waveName = "Wave";
+    public EnemyGroup[] enemyGroups;
+
+    [Header("Wave Timing")]
+    public float startDelay = 3f;  // Wait before wave starts
+    public float postDelay = 5f;   // Wait after wave ends
 }
 
+[System.Serializable] 
 public class WaveSpawner : MonoBehaviour
 {
     public EnemyWave[] waves;
@@ -16,30 +29,46 @@ public class WaveSpawner : MonoBehaviour
     public TheBase baseHealth;
     public Transform spawnPoint;
 
-    private int currentWaveIndex = 0;
+    private int currentWaveIndex = -1;
+    private bool isSpawning = false;
 
-    private void Start()
+    public event Action<int, EnemyWave> OnWaveStarted;
+    public event Action<int> OnWaveCompleted;
+
+    public bool IsSpawning => isSpawning;
+    public bool AllWavesCompleted => currentWaveIndex >= waves.Length - 1;
+    public int CurrentWave => currentWaveIndex + 1;
+
+    public void StartFirstWave()
     {
-        StartCoroutine(SpawnWaves());
+        currentWaveIndex = -1;
+        SpawnNextWave();
     }
 
-    private IEnumerator SpawnWaves()
+    public void SpawnNextWave()
     {
-        while (currentWaveIndex < waves.Length)
+        if (AllWavesCompleted || isSpawning) return;
+        currentWaveIndex++;
+        StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
+    }
+
+    private IEnumerator SpawnWaveCoroutine(EnemyWave wave)
+    {
+        isSpawning = true;
+        OnWaveStarted?.Invoke(currentWaveIndex + 1, wave);
+
+        foreach (var group in wave.enemyGroups)
         {
-            var wave = waves[currentWaveIndex];
-            Debug.Log($"Spawning Wave {currentWaveIndex + 1}");
-
-            for (int i = 0; i < wave.count; i++)
+            for (int i = 0; i < group.count; i++)
             {
-                var enemyObj = Instantiate(wave.enemyPrefab, spawnPoint.position, Quaternion.identity);
-                var enemy = enemyObj.GetComponent<Enemies>();
+                GameObject enemyObj = Instantiate(group.enemyPrefab, spawnPoint.position, Quaternion.identity);
+                Enemies enemy = enemyObj.GetComponent<Enemies>();
                 enemy.Initialize(path, baseHealth);
-                yield return new WaitForSeconds(wave.spawnInterval);
+                yield return new WaitForSeconds(group.spawnInterval);
             }
-
-            currentWaveIndex++;
-            yield return new WaitForSeconds(5f); // delay before next wave
         }
+
+        isSpawning = false;
+        OnWaveCompleted?.Invoke(currentWaveIndex + 1);
     }
 }
