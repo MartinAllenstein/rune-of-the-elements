@@ -1,10 +1,11 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public static Player Instance { get; private set; }
+    //public static Player Instance { get; private set; }
     
     public event EventHandler OnPickedSomething; 
     public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     }
     
     [SerializeField] private float moveSpeed;
-    [SerializeField] private GameInput gameInput;
+    //[SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
     
@@ -24,19 +25,42 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
+    // Network Variable
+    private NetworkVariable<float> playerVisualScaleX = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    
     [SerializeField] private Transform playerVisual; 
     //public SpriteRenderer spriteRenderer;
     public Animator animator;
 
-    private const string IS_WALKING = "isWalking";
+    private const string IS_WALKING = "IsWalking";
+    
+    // --- Network ---
+    public override void OnNetworkSpawn()
+    {
+        playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
+        
+        if (playerVisual != null)
+        {
+            playerVisual.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
+        }
+    }
+    public override void OnNetworkDespawn()
+    {
+        playerVisualScaleX.OnValueChanged -= OnPlayerVisualScaleXChanged;
+    }
+    private void OnPlayerVisualScaleXChanged(float previousValue, float newValue)
+    {
+        if (playerVisual != null)
+        {
+            playerVisual.localScale = new Vector3(newValue, 1, 1);
+        }
+    }
+    
+    
+    
     public void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        //Instance = this;
 
         if (playerVisual == null)
         {
@@ -46,8 +70,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Start()
     {
-        gameInput.OnInteractAction += GameInput_OnInteractAction;
-        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
     }
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
@@ -73,6 +97,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         HandleMovement();
         HandleInteractions();
     }
@@ -84,7 +113,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     
     private void HandleInteractions()
     {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
 
@@ -117,7 +146,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void HandleMovement()
     {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
 
@@ -174,11 +203,13 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         // Sprite flip
         if (inputVector.x > 0)
         {
-            playerVisual.localScale = new Vector3(-1, 1, 1);
+            playerVisualScaleX.Value = -1f;
+            //playerVisual.localScale = new Vector3(-1, 1, 1);
         }
         else if (inputVector.x < 0)
         {
-            playerVisual.localScale = new Vector3(1, 1, 1);
+            playerVisualScaleX.Value = 1f;
+            //playerVisual.localScale = new Vector3(1, 1, 1);
         }
 
         animator.SetBool(IS_WALKING, isWalking);
