@@ -29,7 +29,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public Animator animator;
 
     private const string IS_WALKING = "isWalking";
-
     public void Awake()
     {
         if (Instance != null)

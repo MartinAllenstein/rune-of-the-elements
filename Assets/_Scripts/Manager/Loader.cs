@@ -7,9 +7,8 @@ public static class Loader
     {
         MainMenuScene,
         LoadingScene,
-        MapScene,
-        Level1,
-        Level2
+        MapScene1,
+        MapScene2,
     }
     private static Scene targetScene;
     
