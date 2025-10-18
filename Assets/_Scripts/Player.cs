@@ -5,7 +5,15 @@ using UnityEngine.Serialization;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    //public static Player Instance { get; private set; }
+    public static event EventHandler OnAnyPlayerSpawned;
+    public static event EventHandler OnAnyPickedSomething;
+
+    public static void ResetStaticData()
+    {
+        OnAnyPlayerSpawned = null;
+    }
+    
+    public static Player LocalInstance { get; private set; }
     
     public event EventHandler OnPickedSomething; 
     public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -37,12 +45,18 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     // --- Network ---
     public override void OnNetworkSpawn()
     {
+        if (IsOwner)
+        {
+            LocalInstance = this;
+        }
         playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
         
         if (playerVisual != null)
         {
             playerVisual.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
         }
+        
+        OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
     }
     public override void OnNetworkDespawn()
     {
@@ -60,7 +74,6 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     
     public void Awake()
     {
-        //Instance = this;
 
         if (playerVisual == null)
         {
@@ -239,6 +252,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         if (kitchenObject != null)
         {
             OnPickedSomething?.Invoke(this, EventArgs.Empty);
+            OnAnyPickedSomething?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -255,5 +269,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 }

@@ -382,6 +382,7 @@ GameObject:
   m_Component:
   - component: {fileID: 649120282589102925}
   - component: {fileID: 9205701292944470858}
+  - component: {fileID: 1204480003484024713}
   - component: {fileID: 5390434907964406274}
   m_Layer: 6
   m_Name: ClearStation
@@ -429,6 +430,31 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: -0.2, z: 0}
+--- !u!114 &1204480003484024713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7279442941294901000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1471457049
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &5390434907964406274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f84a0f5e68dce4087d66862db90ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 2769027956535117400}
   kitchenObjectSO: {fileID: 11400000, guid: ba01f71df7868ff42bb5002f21dc1d2f, type: 2}
 --- !u!1 &8007957700252580746
