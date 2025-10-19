@@ -1,10 +1,10 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class KichenGameMultiplayer : NetworkBehaviour
+public class KitchenGameMultiplayer : NetworkBehaviour
 {
     
-    public static KichenGameMultiplayer Instance { get; private set; }
+    public static KitchenGameMultiplayer Instance { get; private set; }
     
     [SerializeField] private KitchenObjectListSO kitchenObjectListSO;
 
@@ -36,12 +36,12 @@ public class KichenGameMultiplayer : NetworkBehaviour
                 kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
     }
 
-    private int GetKitchenObjectSOIndex(KitchenObjectSO kitchenObjectSO)
+    public int GetKitchenObjectSOIndex(KitchenObjectSO kitchenObjectSO)
     {
         return kitchenObjectListSO.kitchenObjectSOList.IndexOf(kitchenObjectSO);
     }
 
-    private KitchenObjectSO GetKitchenObjectSOFromIndex(int kitchenObjectSOIndex)
+    public KitchenObjectSO GetKitchenObjectSOFromIndex(int kitchenObjectSOIndex)
     {
         return kitchenObjectListSO.kitchenObjectSOList[kitchenObjectSOIndex];
     }

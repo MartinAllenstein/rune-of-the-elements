@@ -84,12 +84,12 @@ public class KitchenObject : NetworkBehaviour
 
     public static void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
-        KichenGameMultiplayer.Instance.SpawnKitchenObject(kitchenObjectSO, kitchenObjectParent);
+        KitchenGameMultiplayer.Instance.SpawnKitchenObject(kitchenObjectSO, kitchenObjectParent);
     }
 
     public static void DestroyKitchenObject(KitchenObject kitchenObject)
     {
-        KichenGameMultiplayer.Instance.DestroyKitchenObject(kitchenObject);
+        KitchenGameMultiplayer.Instance.DestroyKitchenObject(kitchenObject);
     }
     
 }

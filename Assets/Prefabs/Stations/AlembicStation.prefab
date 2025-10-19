@@ -1251,6 +1251,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6232912170768768614, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 102665754
+      objectReference: {fileID: 0}
     - target: {fileID: 7279442941294901000, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
       propertyPath: m_Name
       value: AlembicStation
@@ -1344,6 +1348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665a80768eedb9148a1caaf7003a4066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 8828416725691227639}
   fryingRecipeSOArray:
   - {fileID: 11400000, guid: 860f259869686c94a84221c29dd761e9, type: 2}
