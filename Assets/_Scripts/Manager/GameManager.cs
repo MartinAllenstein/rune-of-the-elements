@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     }
 
     private GameState state;
+    private WaveSpawner waveSpawner;
     private float countdownToStartTimer = 3f;
     private bool isGamePaused = false;
 
@@ -37,19 +38,31 @@ public class GameManager : MonoBehaviour
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         
         TheBase.OnBaseDestroyed += TheBase_OnBaseDestroyed;
-        
+
         if (FindFirstObjectByType<SpawnManager>() != null)
         {
             FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted += SpawnManager_OnAllWavesCompleted;
         }
+
+        waveSpawner = FindFirstObjectByType<WaveSpawner>();
+        if (waveSpawner != null)
+        {
+            waveSpawner.OnWaveCompleted += WaveSpawner_OnWaveCompleted;
+        }
+
     }
-    
+
     private void OnDestroy()
     {
         TheBase.OnBaseDestroyed -= TheBase_OnBaseDestroyed;
         if (FindFirstObjectByType<SpawnManager>() != null)
         {
             FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted -= SpawnManager_OnAllWavesCompleted;
+        }
+
+        if (waveSpawner != null)
+        {
+            waveSpawner.OnWaveCompleted -= WaveSpawner_OnWaveCompleted;
         }
     }
 
@@ -81,6 +94,21 @@ public class GameManager : MonoBehaviour
         TogglePauseGame();
     }
 
+    private void WaveSpawner_OnWaveCompleted(int waveNumber)
+    {
+        // If all waves are done -> trigger victory
+        if (waveSpawner.AllWavesCompleted)
+        {
+            state = GameState.Victory;
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            // Optionally, start next wave automatically
+            waveSpawner.SpawnNextWave();
+        }
+    }
+
     private void Update()
     {
         switch (state)
@@ -94,6 +122,11 @@ public class GameManager : MonoBehaviour
                 {
                     state = GameState.GamePlaying;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
+
+                    if (waveSpawner != null)
+                    {
+                        waveSpawner.StartFirstWave();
+                    }
                 }
                 break;
             case GameState.GamePlaying:
