@@ -17,9 +17,6 @@ public class WaveManager : MonoBehaviour
     {
         waveSpawner.OnWaveStarted += HandleWaveStarted;
         waveSpawner.OnWaveCompleted += HandleWaveCompleted;
-
-        // Start the countdown for the very first wave
-        StartCoroutine(WaveCountdownCoroutine(waveSpawner.waves[0].startDelay, isFirstWave: true));
     }
 
     private void Update()
@@ -68,4 +65,11 @@ public class WaveManager : MonoBehaviour
             countdownText.text = "All Waves Deployed!";
         }
     }
+    public void StartWaveSystem()
+    {
+        // Prevent starting early; only begins once game is playing
+        StopAllCoroutines();
+        StartCoroutine(WaveCountdownCoroutine(waveSpawner.waves[0].startDelay, isFirstWave: true));
+    }
+
 }

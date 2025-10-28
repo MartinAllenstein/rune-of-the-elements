@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Enemies : MonoBehaviour
 {
-
     [System.Serializable]
     public class DamageResistance
     {
         public DamageTypeSO damageType;
-        [Range(-1f, 1f)] // -100% (Weakness) to 100% (Resistance)
+        [Range(-1f, 1f)]
         public float resistancePercentage;
     }
 
@@ -23,15 +22,16 @@ public class Enemies : MonoBehaviour
     [Header("Health Settings")]
     public float maxHealth = 100f;
     private float currentHealth;
-    [SerializeField] private List<DamageResistance> resistances; // Damage Resistance Lis
+    [SerializeField] private List<DamageResistance> resistances;
 
     [Header("Attack Settings")]
     public float damage = 10f;
     public float attackRange = 2f;
     public float attackCooldown = 1f;
-    private float attackTimer;
+    private float attackTimer = 0f;
     private TheBase baseHealth;
 
+    private bool isAttackingBase = false;
 
     public event Action<Enemies> OnDeath;
 
@@ -42,38 +42,50 @@ public class Enemies : MonoBehaviour
         currentWaypoint = 0;
         targetWaypoint = path.GetWaypoint(0);
         currentHealth = maxHealth;
+        isAttackingBase = false;
     }
 
     private void Update()
     {
         if (baseHealth == null) return;
 
-        float dist = Vector3.Distance(transform.position, baseHealth.transform.position);
-        if (dist <= attackRange)
+        if (isAttackingBase)
         {
             AttackBase();
-            return;
+            FaceBase();
         }
+        else
+        {
+            float distToBase = Vector3.Distance(transform.position, baseHealth.transform.position);
 
-        MoveAlongPath();
+            if (distToBase <= attackRange)
+            {
+                isAttackingBase = true;
+                attackTimer = 0f; // attack instantly
+                AttackBase();
+            }
+            else
+            {
+                MoveAlongPath();
+            }
+        }
     }
+
     private void MoveAlongPath()
     {
         if (targetWaypoint == null) return;
 
         Vector3 dir = (targetWaypoint.position - transform.position).normalized;
 
-        // Move toward target
         transform.position += dir * moveSpeed * Time.deltaTime;
         transform.forward = Vector3.Lerp(transform.forward, dir, Time.deltaTime * 10f);
 
-        //Flip sprite based on movement direction (X-axis)
+        // Flip sprite based on movement direction (X-axis)
         if (dir.x > 0.05f)
             sR.flipX = true; // Facing right
         else if (dir.x < -0.05f)
             sR.flipX = false; // Facing left
 
-        // Check if close enough to next waypoint
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
             currentWaypoint++;
@@ -86,13 +98,14 @@ public class Enemies : MonoBehaviour
 
     private void ReachBase()
     {
-        // Optional: deal instant damage when reaching base
-        //baseHealth.TakeDamage(damage);
-        //Die();
+        isAttackingBase = true;
+        attackTimer = 0f; // start attacking immediately
     }
 
     private void AttackBase()
     {
+        if (baseHealth == null) return;
+
         attackTimer -= Time.deltaTime;
         if (attackTimer <= 0f)
         {
@@ -101,17 +114,25 @@ public class Enemies : MonoBehaviour
         }
     }
 
+    private void FaceBase()
+    {
+        if (baseHealth == null || sR == null) return;
+
+        Vector3 dirToBase = baseHealth.transform.position - transform.position;
+
+        if (dirToBase.x > 0.05f)
+            sR.flipX = true; // facing right
+        else if (dirToBase.x < -0.05f)
+            sR.flipX = false; // facing left
+    }
+
     public void TakeDamage(float baseDamage, DamageTypeSO damageType)
     {
         float multiplier = 1f;
-
         foreach (var res in resistances)
         {
             if (res.damageType == damageType)
             {
-                // นำค่า % ต้านทานมาคำนวณเป็นตัวคูณ
-                // เช่น ต้านทาน 20% (0.2) -> multiplier = 0.8
-                // แพ้ทาง 30% (-0.3) -> multiplier = 1.3
                 multiplier = 1 - res.resistancePercentage;
                 break;
             }
@@ -119,7 +140,11 @@ public class Enemies : MonoBehaviour
 
         float finalDamage = baseDamage * multiplier;
         currentHealth -= finalDamage;
-        if (currentHealth <= 0) Die();
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
     private void Die()

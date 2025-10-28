@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6908417879843041253}
   - component: {fileID: 3915903305937227581}
   - component: {fileID: 1683313699172417197}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RedSlime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
