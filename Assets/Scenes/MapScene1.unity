@@ -3234,6 +3234,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2574054738
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2259215189
+      objectReference: {fileID: 0}
     - target: {fileID: 4312790372117518317, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
       propertyPath: m_Name
       value: EmptyTower (1)
@@ -8975,6 +8987,18 @@ PrefabInstance:
     - target: {fileID: 1056448989166281967, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2425818384
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1987832578628288762, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 2259215189
       objectReference: {fileID: 0}
     - target: {fileID: 4312790372117518317, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
       propertyPath: m_Name

@@ -219,7 +219,15 @@ MonoBehaviour:
   countersLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  collisionsLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   kitchenObjectHoldPoint: {fileID: 2677022970957207225}
+  spawnPositionList:
+  - {x: -2, y: 1, z: 0}
+  - {x: 2, y: 1, z: 0}
+  - {x: -2, y: 1, z: -2}
+  - {x: 2, y: 1, z: -2}
   playerVisual: {fileID: 0}
   animator: {fileID: 1816656536102730507}
 --- !u!114 &2622752522802384271
