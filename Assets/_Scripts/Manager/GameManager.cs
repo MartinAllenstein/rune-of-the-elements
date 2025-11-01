@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -25,6 +26,8 @@ public class GameManager : NetworkBehaviour
         Victory
     }
 
+    [SerializeField] private Transform playerPrefab;
+    
     private NetworkVariable<GameState> state = new NetworkVariable<GameState>(GameState.WaitingToStart);
     private bool isLocalPlayerReady;
     private NetworkVariable<float> countdownToStartTimer = new NetworkVariable<float>(3f);
@@ -32,6 +35,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
     private Dictionary<ulong, bool> playerReadyDictionary;
     private Dictionary<ulong, bool> playerPausedDictionary;
+    private bool autoTestGamePauseState;
 
     
     private void Awake()
@@ -59,6 +63,26 @@ public class GameManager : NetworkBehaviour
     {
         state.OnValueChanged += State_OnValueChanged;
         isGamePaused.OnValueChanged += IsGamePaused_OnValueChanged;
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+        }
+    }
+
+    private void SceneManager_OnLoadEventCompleted(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Transform playerTransform = Instantiate(playerPrefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        autoTestGamePauseState = true;
     }
 
     private void IsGamePaused_OnValueChanged(bool previousvalue, bool newvalue)
@@ -173,6 +197,22 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        // Error
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsConnectedClient)
+        {
+            return; 
+        }
+        
+        if (autoTestGamePauseState)
+        {
+            Debug.Log("Auto test game paused");
+            autoTestGamePauseState = false;
+            TestGamePausedState();
+        }
+    }
+
     public bool IsGamePlaying()
     {
         return state.Value == GameState.GamePlaying;
@@ -195,6 +235,11 @@ public class GameManager : NetworkBehaviour
     public float GetCountdownToStartTimer()
     {
         return countdownToStartTimer.Value;
+    }
+
+    public bool IsWaitingToStart()
+    {
+        return state.Value == GameState.WaitingToStart;
     }
 
     public bool IsLocalPlayerReady()

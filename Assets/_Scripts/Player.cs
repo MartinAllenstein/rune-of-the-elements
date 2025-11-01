@@ -54,16 +54,30 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         }
 
         transform.position = spawnPositionList[(int)OwnerClientId];
-        
+
         playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
-        
+
         if (playerVisual != null)
         {
             playerVisual.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
         }
-        
+
         OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
     }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if (clientId == OwnerClientId && HasKitchenObject())
+        {
+            KitchenObject.DestroyKitchenObject(GetKitchenObject());
+        }
+    }
+
     public override void OnNetworkDespawn()
     {
         playerVisualScaleX.OnValueChanged -= OnPlayerVisualScaleXChanged;
