@@ -46,7 +46,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 50b75a9d1295ffe4490a74db4f33b073, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8f97a92f7c9dd7444b194f680d674ec5, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -58,7 +58,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RedPlayerIdle
+  m_Name: BluePlayer
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: IsWalking
@@ -151,7 +151,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d406d4a2089de574b8736b672a18d637, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8e4e0de2140586940bd3adbf45636931, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

@@ -26,7 +26,6 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         playerDataNetworkList = new NetworkList<PlayerData>();
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
     }
-
     private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeevent)
     {
         OnPlayerDataNetworkListChanged?.Invoke(this, EventArgs.Empty);

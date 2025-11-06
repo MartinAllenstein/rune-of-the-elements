@@ -339,6 +339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   kitchenObjectListSO: {fileID: 11400000, guid: 2cd838f640a007047b776586adacf213, type: 2}
+  playerVisualListSO: {fileID: 11400000, guid: 86dd548432152664da5b39b901a18027, type: 2}
 --- !u!114 &122291972
 MonoBehaviour:
   m_ObjectHideFlags: 0
