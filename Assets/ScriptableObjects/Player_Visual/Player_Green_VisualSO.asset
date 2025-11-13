@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cda016e7807fb1f4e89ac2d97f6bb78f, type: 3}
-  m_Name: Player_Blue_VisualSO
+  m_Name: Player_Green_VisualSO
   m_EditorClassIdentifier: 
-  animatorController: {fileID: 9100000, guid: de4c9fe0fbb2a1746b36795fa01609c4, type: 2}
-  sprite: {fileID: 21300000, guid: 5bc0124db6f90474995a8d95eb624747, type: 3}
+  animatorController: {fileID: 9100000, guid: 84722c017752c3f4dbfecde9f1751629, type: 2}
+  sprite: {fileID: 21300000, guid: 485454d2219a8584c8e3514158215d72, type: 3}

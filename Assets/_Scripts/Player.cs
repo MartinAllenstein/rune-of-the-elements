@@ -108,7 +108,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
         
         PlayerData playerData = KitchenGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
-        playerVisual.SetPlayerColor(KitchenGameMultiplayer.Instance.GetPlayerColor(playerData.colorId));
+        playerVisual.SetPlayerVisual(KitchenGameMultiplayer.Instance.GetPlayerVisual(playerData.visualId));
     }
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)

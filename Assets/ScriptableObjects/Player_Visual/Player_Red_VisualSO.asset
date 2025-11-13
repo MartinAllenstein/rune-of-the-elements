@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Player_Red_VisualSO
   m_EditorClassIdentifier: 
   animatorController: {fileID: 9100000, guid: ead0f778b81dcd147bbff2c7702635d2, type: 2}
+  sprite: {fileID: 21300000, guid: 25c5c3aaa93df2d45ad785ff9957cd67, type: 3}

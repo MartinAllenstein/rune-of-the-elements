@@ -4,4 +4,5 @@ using UnityEngine;
 public class PlayerVisualSO : ScriptableObject
 {
     public RuntimeAnimatorController animatorController;
+    public Sprite sprite;
 }

@@ -465,6 +465,7 @@ MonoBehaviour:
   - {r: 0, g: 0.18552971, b: 1, a: 1}
   - {r: 0.024959564, g: 1, b: 0, a: 1}
   - {r: 1, g: 0.84357387, b: 0, a: 1}
+  playerVisualListSO: {fileID: 11400000, guid: 86dd548432152664da5b39b901a18027, type: 2}
 --- !u!114 &122291972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2199,7 +2200,7 @@ GameObject:
   - component: {fileID: 788255838}
   - component: {fileID: 788255839}
   m_Layer: 5
-  m_Name: ConnectionResponseMessageUI
+  m_Name: LobbyMessageUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

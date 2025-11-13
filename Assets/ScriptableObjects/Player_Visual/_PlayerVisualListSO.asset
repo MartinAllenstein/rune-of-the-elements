@@ -15,3 +15,5 @@ MonoBehaviour:
   playerVisualSOList:
   - {fileID: 11400000, guid: c8322ec20f09d734690984488125aa3f, type: 2}
   - {fileID: 11400000, guid: a01dcd76468870340b1c1f03e71759cd, type: 2}
+  - {fileID: 11400000, guid: f496e72830874634e9b58d8cd0e2bdb1, type: 2}
+  - {fileID: 11400000, guid: 1ee63da6a8091034b87419d5dfe4cb67, type: 2}

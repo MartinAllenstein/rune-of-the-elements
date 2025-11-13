@@ -18,7 +18,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
     
     
     [SerializeField] private KitchenObjectListSO kitchenObjectListSO;
-    [SerializeField] private List<Color> playerColorList;
+    [SerializeField] private PlayerVisualListSO playerVisualListSO;
     
     private NetworkList<PlayerData> playerDataNetworkList;
     private string playerName;
@@ -77,7 +77,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         playerDataNetworkList.Add(new PlayerData
         {
             clientId = clientId,
-            colorId = GetFirstUnusedColorId(),
+            visualId = GetFirstUnusedVisualId(),
         });
         SetPlayerNameServerRpc(GetPlayerName());
         SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
@@ -242,20 +242,20 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         return playerDataNetworkList[playerIndex];
     }
 
-    public Color GetPlayerColor(int colorId)
+    public PlayerVisualSO GetPlayerVisual(int visualId)
     {
-        return playerColorList[colorId];
+        return playerVisualListSO.playerVisualSOList[visualId];
     }
-
-    public void ChangePlayerColor(int colorId)
+    
+    public void ChangePlayerVisual(int colorId)
     {
         ChangePlayerColorServerRpc(colorId);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ChangePlayerColorServerRpc(int colorId, ServerRpcParams serverRpcParams = default)
+    private void ChangePlayerColorServerRpc(int visualId, ServerRpcParams serverRpcParams = default)
     {
-        if (!IsColorAvailable(colorId))
+        if (!IsVisualAvailable(visualId))
         {
             // Color not available
             return;
@@ -265,16 +265,16 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         
         PlayerData playerData = playerDataNetworkList[playerDataIndex];
         
-        playerData.colorId = colorId;
+        playerData.visualId = visualId;
         
         playerDataNetworkList[playerDataIndex] = playerData;
     }
 
-    private bool IsColorAvailable(int colorId)
+    private bool IsVisualAvailable(int visualId)
     {
         foreach (PlayerData playerData in playerDataNetworkList)
         {
-            if (playerData.colorId == colorId)
+            if (playerData.visualId == visualId)
             {
                 // Already in use
                 return false;
@@ -283,11 +283,11 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         return true;
     }
 
-    private int GetFirstUnusedColorId()
+    private int GetFirstUnusedVisualId()
     {
-        for (int i = 0; i < playerColorList.Count; i++)
+        for (int i = 0; i < playerVisualListSO.playerVisualSOList.Count; i++)
         {
-            if (IsColorAvailable(i))
+            if (IsVisualAvailable(i))
             {
                 return i;
             }
