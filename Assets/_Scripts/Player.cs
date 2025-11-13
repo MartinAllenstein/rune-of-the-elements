@@ -30,6 +30,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     [SerializeField] private LayerMask collisionsLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
     [SerializeField] private List<Vector3> spawnPositionList;
+    [SerializeField] private PlayerVisual playerVisual;
     
     private bool isWalking;
     private Vector3 lastInteractDir;
@@ -39,7 +40,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     // Network Variable
     private NetworkVariable<float> playerVisualScaleX = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     
-    [SerializeField] private Transform playerVisual; 
+    [SerializeField] private Transform playerVisualTransform; 
     //public SpriteRenderer spriteRenderer;
     public Animator animator;
 
@@ -53,13 +54,13 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
             LocalInstance = this;
         }
 
-        transform.position = spawnPositionList[(int)OwnerClientId];
+        transform.position = spawnPositionList[KitchenGameMultiplayer.Instance.GetPlayerDataIndexFromClientId(OwnerClientId)];
 
         playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
 
-        if (playerVisual != null)
+        if (playerVisualTransform != null)
         {
-            playerVisual.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
+            playerVisualTransform.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
         }
 
         OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
@@ -84,9 +85,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     }
     private void OnPlayerVisualScaleXChanged(float previousValue, float newValue)
     {
-        if (playerVisual != null)
+        if (playerVisualTransform != null)
         {
-            playerVisual.localScale = new Vector3(newValue, 1, 1);
+            playerVisualTransform.localScale = new Vector3(newValue, 1, 1);
         }
     }
     
@@ -95,9 +96,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public void Awake()
     {
 
-        if (playerVisual == null)
+        if (playerVisualTransform == null)
         {
-            playerVisual = transform;
+            playerVisualTransform = transform;
         }
     }
 
@@ -105,6 +106,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     {
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        
+        PlayerData playerData = KitchenGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+        playerVisual.SetPlayerColor(KitchenGameMultiplayer.Instance.GetPlayerColor(playerData.colorId));
     }
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)

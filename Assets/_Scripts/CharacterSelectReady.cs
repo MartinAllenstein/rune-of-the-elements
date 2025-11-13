@@ -45,6 +45,7 @@ public class CharacterSelectReady : NetworkBehaviour
 
         if (allClientsReady)
         {
+            GameLobby.Instance.DeleteLobby();
             Loader.LoadNetwork(Loader.Scene.MapScene1);
         }
     }
@@ -59,6 +60,6 @@ public class CharacterSelectReady : NetworkBehaviour
 
     public bool IsPlayerReady(ulong clientId)
     {
-        return playerReadyDictionary.ContainsKey(clientId) && playerReadyDictionary[clientId];
-}
+        return playerReadyDictionary.ContainsKey(clientId) && playerReadyDictionary[clientId]; 
+    }
 }
