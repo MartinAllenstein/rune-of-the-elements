@@ -18,20 +18,56 @@ public class LobbyMessageUI : MonoBehaviour
     private void Start()
     {
         KitchenGameMultiplayer.Instance.OnFailedToJoinGame += KitchenGameMultiplayer_OnFailedToJoinGame;
+        GameLobby.Instance.OnCreateLobbyStarted += GameLobby_OnCreateLobbyStarted;
+        GameLobby.Instance.OnCreateLobbyFailed += GameLobby_OnCreateLobbyFailed;
+        GameLobby.Instance.OnJoinStarted += GameLobby_OnJoinStarted;
+        GameLobby.Instance.OnJoinFailed += GameLobby_OnJoinFailed;
+        GameLobby.Instance.OnQuickJoinFailed += GameLobby_OnQuickJoinFailed;
         
         Hide();
     }
 
+    private void GameLobby_OnQuickJoinFailed(object sender, EventArgs e)
+    {
+        ShowMessage("Could not find a Lobby to Quick Join!");
+    }
+
+    private void GameLobby_OnJoinFailed(object sender, EventArgs e)
+    {
+        ShowMessage("Failed to join Lobby...");
+    }
+
+    private void GameLobby_OnJoinStarted(object sender, EventArgs e)
+    {
+        ShowMessage("Joining Lobby...");
+    }
+
+    private void GameLobby_OnCreateLobbyFailed(object sender, EventArgs e)
+    {
+        ShowMessage("Failed to create Lobby!");
+    }
+
+    private void GameLobby_OnCreateLobbyStarted(object sender, EventArgs e)
+    {
+        ShowMessage("Creating Lobby...");
+    }
+
     private void KitchenGameMultiplayer_OnFailedToJoinGame(object sender, EventArgs e)
     {
-        Show();
-
-        messageText.text = NetworkManager.Singleton.DisconnectReason;
-
-        if (messageText.text == "")
+        if (NetworkManager.Singleton.DisconnectReason == "")
         {
-            messageText.text = "Failed to connect";
+            ShowMessage("Failed to connect");
         }
+        else
+        {
+            ShowMessage(NetworkManager.Singleton.DisconnectReason);
+        }
+    }
+
+    private void ShowMessage(string message)
+    {
+        Show();
+        messageText.text = message;
     }
 
     private void Show()
@@ -47,5 +83,10 @@ public class LobbyMessageUI : MonoBehaviour
     private void OnDestroy()
     {
         KitchenGameMultiplayer.Instance.OnFailedToJoinGame -= KitchenGameMultiplayer_OnFailedToJoinGame;
+        GameLobby.Instance.OnCreateLobbyStarted -= GameLobby_OnCreateLobbyStarted;
+        GameLobby.Instance.OnCreateLobbyFailed -= GameLobby_OnCreateLobbyFailed;
+        GameLobby.Instance.OnJoinStarted -= GameLobby_OnJoinStarted;
+        GameLobby.Instance.OnJoinFailed -= GameLobby_OnJoinFailed;
+        GameLobby.Instance.OnQuickJoinFailed -= GameLobby_OnQuickJoinFailed;
     }
 }
