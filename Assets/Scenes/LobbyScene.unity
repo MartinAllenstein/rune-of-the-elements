@@ -2787,7 +2787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43bfac3ecba7b344a18a2981f03a583, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyNameText: {fileID: 0}
+  lobbyNameText: {fileID: 226654982}
 --- !u!114 &941364667
 MonoBehaviour:
   m_ObjectHideFlags: 0
