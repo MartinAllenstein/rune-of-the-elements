@@ -8,11 +8,25 @@ public class SelectedCounterVisual : MonoBehaviour
     [SerializeField] private GameObject[] visualGameObjectArray;
     private void Start()
     {
-        if (Player.Instance != null)
+        if (Player.LocalInstance != null)
         {
-            Player.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+            Player.LocalInstance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        }
+        else
+        {
+            Player.OnAnyPlayerSpawned += Player_OnAnyPlayerSpawned;
         }
     }
+
+    private void Player_OnAnyPlayerSpawned(object sender, EventArgs e)
+    {
+        if (Player.LocalInstance != null)
+        {
+            Player.LocalInstance.OnSelectedCounterChanged -= Player_OnSelectedCounterChanged;
+            Player.LocalInstance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
+        }
+    }
+
     private void Player_OnSelectedCounterChanged(object sender, Player.OnSelectedCounterChangedEventArgs e)
     {
         if (e.selectedCounter == baseCounter)
@@ -46,9 +60,9 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (Player.Instance != null)
+        if (Player.LocalInstance != null)
         {
-            Player.Instance.OnSelectedCounterChanged -= Player_OnSelectedCounterChanged;
+            Player.LocalInstance.OnSelectedCounterChanged -= Player_OnSelectedCounterChanged;
         }
     }
     

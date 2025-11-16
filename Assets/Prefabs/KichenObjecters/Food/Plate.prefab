@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1682111874933130499}
+  - component: {fileID: 1353372785509175618}
   - component: {fileID: -5270709838228519237}
   m_Layer: 0
   m_Name: Plate
@@ -34,6 +35,31 @@ Transform:
   - {fileID: 3468540453357406180}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1353372785509175618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4884111413219424242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2103937466
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &-5270709838228519237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,6 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab073cc9dc0a67a49a4f0b1e6d3bebcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   kitchenObjectSO: {fileID: 11400000, guid: e683974d89b6bad41a7862ac3b3faa47, type: 2}
   validKitchenObjectsList:
   - {fileID: 11400000, guid: 7193520f0c702834baefd595a6b47531, type: 2}

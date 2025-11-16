@@ -1,10 +1,20 @@
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public static Player Instance { get; private set; }
+    public static event EventHandler OnAnyPlayerSpawned;
+    public static event EventHandler OnAnyPickedSomething;
+
+    public static void ResetStaticData()
+    {
+        OnAnyPlayerSpawned = null;
+    }
+    
+    public static Player LocalInstance { get; private set; }
     
     public event EventHandler OnPickedSomething; 
     public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -15,40 +25,90 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     }
     
     [SerializeField] private float moveSpeed;
-    [SerializeField] private GameInput gameInput;
+    //[SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
+    [SerializeField] private LayerMask collisionsLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
+    [SerializeField] private List<Vector3> spawnPositionList;
+    [SerializeField] private PlayerVisual playerVisual;
     
     private bool isWalking;
     private Vector3 lastInteractDir;
     private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
-    [SerializeField] private Transform playerVisual; 
+    // Network Variable
+    private NetworkVariable<float> playerVisualScaleX = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    
+    [SerializeField] private Transform playerVisualTransform; 
     //public SpriteRenderer spriteRenderer;
     public Animator animator;
 
-    private const string IS_WALKING = "isWalking";
+    private const string IS_WALKING = "IsWalking";
+    
+    // --- Network ---
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            LocalInstance = this;
+        }
 
+        transform.position = spawnPositionList[KitchenGameMultiplayer.Instance.GetPlayerDataIndexFromClientId(OwnerClientId)];
+
+        playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
+
+        if (playerVisualTransform != null)
+        {
+            playerVisualTransform.localScale = new Vector3(playerVisualScaleX.Value, 1, 1);
+        }
+
+        OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if (clientId == OwnerClientId && HasKitchenObject())
+        {
+            KitchenObject.DestroyKitchenObject(GetKitchenObject());
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        playerVisualScaleX.OnValueChanged -= OnPlayerVisualScaleXChanged;
+    }
+    private void OnPlayerVisualScaleXChanged(float previousValue, float newValue)
+    {
+        if (playerVisualTransform != null)
+        {
+            playerVisualTransform.localScale = new Vector3(newValue, 1, 1);
+        }
+    }
+    
+    
+    
     public void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
 
-        if (playerVisual == null)
+        if (playerVisualTransform == null)
         {
-            playerVisual = transform;
+            playerVisualTransform = transform;
         }
     }
 
     private void Start()
     {
-        gameInput.OnInteractAction += GameInput_OnInteractAction;
-        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        
+        PlayerData playerData = KitchenGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+        playerVisual.SetPlayerVisual(KitchenGameMultiplayer.Instance.GetPlayerVisual(playerData.visualId));
     }
     
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e)
@@ -74,6 +134,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         HandleMovement();
         HandleInteractions();
     }
@@ -85,7 +150,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     
     private void HandleInteractions()
     {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
 
@@ -95,7 +160,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         }
 
         float interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, collisionsLayerMask, QueryTriggerInteraction.Ignore))
         {
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
@@ -118,14 +183,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void HandleMovement()
     {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
 
         float moveDistance = moveSpeed * Time.deltaTime;
         float playerHeight = 2f;
         float playerRadius = 0.7f;
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirection, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+        bool canMove = !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDirection, Quaternion.identity, moveDistance, collisionsLayerMask, QueryTriggerInteraction.Ignore);
 
         if (!canMove)
         {
@@ -133,7 +198,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
             // Attempt only X movement
             Vector3 moveDirX = new Vector3(moveDirection.x, 0, 0).normalized;
-            canMove = (moveDirection.x < -0.5f || moveDirection.x > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            canMove = (moveDirection.x < -0.5f || moveDirection.x > +0.5f) && !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDirX, Quaternion.identity, moveDistance, collisionsLayerMask, QueryTriggerInteraction.Ignore);
 
             if (canMove)
             {
@@ -146,7 +211,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
                 // Attempt only Z movement
                 Vector3 moveDirZ = new Vector3(0, 0, moveDirection.z).normalized;
-                canMove = (moveDirection.z < -0.5f || moveDirection.z > +0.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                canMove = (moveDirection.z < -0.5f || moveDirection.z > +0.5f) && !Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDirZ, Quaternion.identity, moveDistance, countersLayerMask, QueryTriggerInteraction.Ignore);
 
                 if (canMove)
                 {
@@ -175,11 +240,13 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         // Sprite flip
         if (inputVector.x > 0)
         {
-            playerVisual.localScale = new Vector3(-1, 1, 1);
+            playerVisualScaleX.Value = -1f;
+            //playerVisual.localScale = new Vector3(-1, 1, 1);
         }
         else if (inputVector.x < 0)
         {
-            playerVisual.localScale = new Vector3(1, 1, 1);
+            playerVisualScaleX.Value = 1f;
+            //playerVisual.localScale = new Vector3(1, 1, 1);
         }
 
         animator.SetBool(IS_WALKING, isWalking);
@@ -209,6 +276,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         if (kitchenObject != null)
         {
             OnPickedSomething?.Invoke(this, EventArgs.Empty);
+            OnAnyPickedSomething?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -225,5 +293,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 }

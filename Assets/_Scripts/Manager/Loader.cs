@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,9 +8,10 @@ public static class Loader
     {
         MainMenuScene,
         LoadingScene,
-        MapScene,
-        Level1,
-        Level2
+        MapScene1,
+        MapScene2,
+        LobbyScene,
+        CharacterSelectScene,
     }
     private static Scene targetScene;
     
@@ -24,19 +26,19 @@ public static class Loader
 
     public static void LoadNextLevel()
     {
-        // หา Build Index ของ Scene ปัจจุบัน
+        // Build Index from cur Scene
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 
-        // ตรวจสอบว่ามีด่านต่อไปใน Build Settings หรือไม่
+        // Check next scene in Build Settings
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            // ถ้ามี ให้โหลดด่านถัดไป
+            // Load Next Scene
             SceneManager.LoadScene(nextSceneIndex);
         }
         else
         {
-            // ถ้าไม่มี (จบด่านสุดท้ายแล้ว) ให้กลับไปที่เมนูหลัก
+            // No more Levels
             Load(Scene.MainMenuScene);
         }
     }
@@ -45,7 +47,12 @@ public static class Loader
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    
+
+
+    public static void LoadNetwork(Scene targetScene)
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene(targetScene.ToString(), LoadSceneMode.Single);
+    }
 
     public static void LoaderCallback()
     {
