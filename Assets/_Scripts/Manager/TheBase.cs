@@ -20,7 +20,9 @@ public class TheBase : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
-        
+
+        Debug.Log($"Base took {damageAmount} damage! HP: {currentHealth}/{maxHealth}");
+
         OnHealthChanged?.Invoke(this, EventArgs.Empty);
         
         if (currentHealth <= 0)
