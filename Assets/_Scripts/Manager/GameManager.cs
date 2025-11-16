@@ -1,14 +1,22 @@
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
+    
     public static GameManager Instance { get; private set; }
-
-    public event EventHandler OnStateChanged;
-    public event EventHandler OnGamePause;
-    public event EventHandler OnGameUnpaused;
-
+    
+    
+    public event EventHandler OnStateChanged; 
+    public event EventHandler OnLocalGamePaused;
+    public event EventHandler OnLocalGameUnpaused;
+    public event EventHandler OnMultiplayerGamePaused;
+    public event EventHandler OnMultiplayerGameUnpaused;
+    public event EventHandler OnLocalPlayerReadyChange;
+    
     private enum GameState
     {
         WaitingToStart,
@@ -18,101 +26,139 @@ public class GameManager : MonoBehaviour
         Victory
     }
 
-    private GameState state;
-    private WaveSpawner waveSpawner;
-    private WaveManager waveManager;
-    private float countdownToStartTimer = 3f;
-    private bool isGamePaused = false;
+    [SerializeField] private Transform playerPrefab;
+    
+    private NetworkVariable<GameState> state = new NetworkVariable<GameState>(GameState.WaitingToStart);
+    private bool isLocalPlayerReady;
+    private NetworkVariable<float> countdownToStartTimer = new NetworkVariable<float>(3f);
+    private bool isLocalGamePaused = false;
+    private NetworkVariable<bool> isGamePaused = new NetworkVariable<bool>(false);
+    private Dictionary<ulong, bool> playerReadyDictionary;
+    private Dictionary<ulong, bool> playerPausedDictionary;
+    private bool autoTestGamePauseState;
 
+    
     private void Awake()
     {
         Instance = this;
-        state = GameState.WaitingToStart;
+        
+        playerReadyDictionary = new Dictionary<ulong, bool>();
+        playerPausedDictionary = new Dictionary<ulong, bool>();
     }
 
     private void Start()
     {
         GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
-
+        
         TheBase.OnBaseDestroyed += TheBase_OnBaseDestroyed;
-
-        // If you still have a SpawnManager that signals all waves completed, keep it (but note: victory should be based on all enemies cleared)
+        
         if (FindFirstObjectByType<SpawnManager>() != null)
         {
             FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted += SpawnManager_OnAllWavesCompleted;
         }
+    }
 
-        // cache the WaveSpawner reference
-        waveSpawner = FindFirstObjectByType<WaveSpawner>();
-        if (waveSpawner != null)
+    public override void OnNetworkSpawn()
+    {
+        state.OnValueChanged += State_OnValueChanged;
+        isGamePaused.OnValueChanged += IsGamePaused_OnValueChanged;
+
+        if (IsServer)
         {
-            // subscribe to the proper event that signals "all enemies cleared after all waves"
-            waveSpawner.OnAllEnemiesCleared += WaveSpawner_OnAllEnemiesCleared;
-
-            // If you want other info (like UI updates) you can also subscribe to OnWaveStarted / OnWaveCompleted here,
-            // but DO NOT set Victory here based on waves spawned only.
-            // Example: waveSpawner.OnWaveStarted += SomeHandlerForUI;
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
         }
+    }
 
-        // cache the WaveManager reference (may be null if not in scene)
-        waveManager = FindFirstObjectByType<WaveManager>();
-
-        // Don't subscribe to waveManager.waveSpawner.OnWaveCompleted here without checking for null,
-        // and avoid setting Victory in that handler. WaveSpawner.OnAllEnemiesCleared is the correct trigger.
-        // (If you need to react to OnWaveCompleted for UI, do a guarded subscription as shown below.)
-        if (waveManager != null && waveManager.waveSpawner != null)
+    private void SceneManager_OnLoadEventCompleted(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            // Example: subscribe to OnWaveCompleted for UI purposes (this does NOT set Victory)
-            waveManager.waveSpawner.OnWaveCompleted += WaveSpawner_OnWaveCompleted_ForUI;
+            Transform playerTransform = Instantiate(playerPrefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        autoTestGamePauseState = true;
+    }
+
+    private void IsGamePaused_OnValueChanged(bool previousvalue, bool newvalue)
+    {
+        if (isGamePaused.Value)
+        {
+            Time.timeScale = 0f;
+            
+            OnMultiplayerGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            
+            OnMultiplayerGameUnpaused?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void State_OnValueChanged(GameState previousvalue, GameState newvalue)
+    {
+        OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnDestroy()
     {
-        GameInput.Instance.OnPauseAction -= GameInput_OnPauseAction;
-        GameInput.Instance.OnInteractAction -= GameInput_OnInteractAction;
-
         TheBase.OnBaseDestroyed -= TheBase_OnBaseDestroyed;
-
         if (FindFirstObjectByType<SpawnManager>() != null)
         {
             FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted -= SpawnManager_OnAllWavesCompleted;
-        }
-
-        if (waveSpawner != null)
-        {
-            waveSpawner.OnAllEnemiesCleared -= WaveSpawner_OnAllEnemiesCleared;
-            // unsubscribe any additional listeners if you added them (not necessary if you didn't)
-            // waveSpawner.OnWaveStarted -= SomeHandlerForUI;
-        }
-
-        if (waveManager != null && waveManager.waveSpawner != null)
-        {
-            waveManager.waveSpawner.OnWaveCompleted -= WaveSpawner_OnWaveCompleted_ForUI;
         }
     }
 
     private void TheBase_OnBaseDestroyed(object sender, EventArgs e)
     {
-        state = GameState.GameOver;
-        OnStateChanged?.Invoke(this, EventArgs.Empty);
+        state.Value = GameState.GameOver;
+        //OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    // If you still use SpawnManager for something else, you can keep this.
-    // But do NOT set Victory here unless you also ensure no enemies remain.
     private void SpawnManager_OnAllWavesCompleted(object sender, EventArgs e)
     {
-        // Keep this if SpawnManager is used for other logic.
-        // Note: do NOT mark victory here — waiting for OnAllEnemiesCleared is the safe approach.
+        state.Value = GameState.Victory;
+        //OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
-
+    
+    
+    
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
-        if (state == GameState.WaitingToStart)
+        if (state.Value == GameState.WaitingToStart)
         {
-            state = GameState.CountdownToStart;
-            OnStateChanged?.Invoke(this, EventArgs.Empty);
+            isLocalPlayerReady = true;
+            OnLocalPlayerReadyChange?.Invoke(this, EventArgs.Empty);
+            
+            SetPlayerReadyServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        bool allClientsReady = true;
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId])
+            {
+                // This Player is NOT ready
+                allClientsReady = false;
+                break;
+            }
+        }
+
+        if (allClientsReady)
+        {
+            state.Value = GameState.CountdownToStart;
         }
     }
 
@@ -121,92 +167,133 @@ public class GameManager : MonoBehaviour
         TogglePauseGame();
     }
 
-    // This method is kept for UI reactions to wave completion — it should NOT set Victory.
-    private void WaveSpawner_OnWaveCompleted_ForUI(int waveNumber)
-    {
-        // Example: update some UI, play sound, etc.
-        // Debug.Log($"Wave {waveNumber} completed.");
-    }
-
     private void Update()
     {
-        switch (state)
+        if (!IsServer)
+        {
+            return;
+        }
+        
+        switch (state.Value)
         {
             case GameState.WaitingToStart:
+                
                 break;
-
             case GameState.CountdownToStart:
-                countdownToStartTimer -= Time.deltaTime;
-                if (countdownToStartTimer < 0f)
+                countdownToStartTimer.Value -= Time.deltaTime;
+                if (countdownToStartTimer.Value < 0f)
                 {
-                    state = GameState.GamePlaying;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
-
-                    // Start wave system when game starts
-                    if (waveManager != null)
-                    {
-                        waveManager.StartWaveSystem();
-                    }
+                    state.Value = GameState.GamePlaying;
                 }
                 break;
-
             case GameState.GamePlaying:
                 break;
-
             case GameState.GameOver:
                 // For The UI
                 break;
-
             case GameState.Victory:
                 // For The UI
                 break;
         }
     }
 
+    private void LateUpdate()
+    {
+        // Error
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsConnectedClient)
+        {
+            return; 
+        }
+        
+        if (autoTestGamePauseState)
+        {
+            Debug.Log("Auto test game paused");
+            autoTestGamePauseState = false;
+            TestGamePausedState();
+        }
+    }
+
     public bool IsGamePlaying()
     {
-        return state == GameState.GamePlaying;
+        return state.Value == GameState.GamePlaying;
     }
 
     public bool IsCountdownToStartActive()
     {
-        return state == GameState.CountdownToStart;
+        return state.Value == GameState.CountdownToStart;
     }
 
     public bool IsGameOver()
     {
-        return state == GameState.GameOver;
+        return state.Value == GameState.GameOver;
     }
 
     public bool IsVictory()
     {
-        return state == GameState.Victory;
+        return state.Value == GameState.Victory;
     }
-
     public float GetCountdownToStartTimer()
     {
-        return countdownToStartTimer;
+        return countdownToStartTimer.Value;
     }
 
-    // This is the correct place to set Victory: after all waves spawned AND all enemies cleared.
-    private void WaveSpawner_OnAllEnemiesCleared()
+    public bool IsWaitingToStart()
     {
-        state = GameState.Victory;
-        OnStateChanged?.Invoke(this, EventArgs.Empty);
+        return state.Value == GameState.WaitingToStart;
     }
 
+    public bool IsLocalPlayerReady()
+    {
+        return isLocalPlayerReady;
+    }
+    
     public void TogglePauseGame()
     {
-        isGamePaused = !isGamePaused;
-        if (isGamePaused)
+        isLocalGamePaused = !isLocalGamePaused;
+        if (isLocalGamePaused)
         {
-            Time.timeScale = 0f;
-            OnGamePause?.Invoke(this, EventArgs.Empty);
+            PauseGameServerRpc();
+            
+            OnLocalGamePaused?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            Time.timeScale = 1f;
-            OnGameUnpaused?.Invoke(this, EventArgs.Empty);
+            UnpauseGameServerRpc();
+            
+            OnLocalGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPausedDictionary[serverRpcParams.Receive.SenderClientId] = true;
+        
+        TestGamePausedState();
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void UnpauseGameServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerPausedDictionary[serverRpcParams.Receive.SenderClientId] = false;
+        
+        TestGamePausedState();
+    }
+
+    private void TestGamePausedState()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (playerPausedDictionary.ContainsKey(clientId) && playerPausedDictionary[clientId])
+            {
+                // This player is paused
+                isGamePaused.Value = true;
+                return;
+            }
+        }
+        
+        // All players are unpaused
+        isGamePaused.Value = false;
+    }
 }
+
