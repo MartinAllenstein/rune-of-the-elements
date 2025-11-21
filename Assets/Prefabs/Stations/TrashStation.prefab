@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4985820828627591913
 Transform:
   m_ObjectHideFlags: 0
@@ -226,6 +226,10 @@ PrefabInstance:
       propertyPath: baseCounter
       value: 
       objectReference: {fileID: 4439384804980375477}
+    - target: {fileID: 6232912170768768614, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 775212599
+      objectReference: {fileID: 0}
     - target: {fileID: 7279442941294901000, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
       propertyPath: m_Name
       value: TrashStation
@@ -266,6 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b3d7adc5e638d4092c7df4dcfc000f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 1478084383424905220}
 --- !u!4 &7122704352670919495 stripped
 Transform:

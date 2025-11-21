@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemies : MonoBehaviour
+using Unity.Netcode;
+
+public class Enemy : NetworkBehaviour
 {
     [System.Serializable]
     public class DamageResistance
     {
         public DamageTypeSO damageType;
-        [Range(-1f, 1f)]
+        [Range(-1f, 1f)] // -100% (Weakness) to 100% (Resistance)
         public float resistancePercentage;
     }
 
@@ -33,7 +35,21 @@ public class Enemies : MonoBehaviour
 
     private bool isAttackingBase = false;
 
-    public event Action<Enemies> OnDeath;
+    private NetworkVariable<bool> isFacingRight = new NetworkVariable<bool>(true);
+
+    public event Action<Enemy> OnDeath;
+
+    public override void OnNetworkSpawn()
+    {
+        isFacingRight.OnValueChanged += OnFacingChanged;
+        // Initial state
+        if (sR != null) sR.flipX = isFacingRight.Value;
+    }
+
+    private void OnFacingChanged(bool prev, bool current)
+    {
+        if (sR != null) sR.flipX = current;
+    }
 
     public void Initialize(WaypointPath assignedPath, TheBase baseRef)
     {
@@ -47,6 +63,7 @@ public class Enemies : MonoBehaviour
 
     private void Update()
     {
+        if (!IsServer) return;
         if (baseHealth == null) return;
 
         if (isAttackingBase)
@@ -82,9 +99,9 @@ public class Enemies : MonoBehaviour
 
         // Flip sprite based on movement direction (X-axis)
         if (dir.x > 0.05f)
-            sR.flipX = true; // Facing right
+            isFacingRight.Value = true; // Facing right
         else if (dir.x < -0.05f)
-            sR.flipX = false; // Facing left
+            isFacingRight.Value = false; // Facing left
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.2f)
         {
@@ -121,9 +138,9 @@ public class Enemies : MonoBehaviour
         Vector3 dirToBase = baseHealth.transform.position - transform.position;
 
         if (dirToBase.x > 0.05f)
-            sR.flipX = true; // facing right
+            isFacingRight.Value = true; // facing right
         else if (dirToBase.x < -0.05f)
-            sR.flipX = false; // facing left
+            isFacingRight.Value = false; // facing left
     }
 
     public void TakeDamage(float baseDamage, DamageTypeSO damageType)
@@ -150,6 +167,14 @@ public class Enemies : MonoBehaviour
     private void Die()
     {
         OnDeath?.Invoke(this);
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            GetComponent<NetworkObject>().Despawn(true);
+        }
+        else
+        {
+            // Should not happen if logic is server only, but safe fallback
+            Destroy(gameObject);
+        }
     }
 }

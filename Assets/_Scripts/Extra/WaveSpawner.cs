@@ -1,7 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
-using System;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class EnemyGroup
@@ -22,7 +23,7 @@ public class EnemyWave
     public float postDelay = 5f;
 }
 
-public class WaveSpawner : MonoBehaviour
+public class WaveSpawner : NetworkBehaviour
 {
     [Header("References")]
     public EnemyWave[] waves;
@@ -32,32 +33,33 @@ public class WaveSpawner : MonoBehaviour
 
     private int currentWaveIndex = -1;
     private bool isSpawning = false;
-    private List<Enemies> activeEnemies = new List<Enemies>();
+    
+    private List<Enemy> activeEnemies = new List<Enemy>();
 
     public event Action<int, EnemyWave> OnWaveStarted;
     public event Action<int> OnWaveCompleted;
-    public event Action OnAllEnemiesCleared; // Fired when all enemies gone after last wave
+    public event Action OnAllEnemiesCleared;
 
     public bool IsSpawning => isSpawning;
-
-    // Primary property name (keeps your existing logic)
     public bool AllWavesSpawned => currentWaveIndex >= waves.Length - 1;
-
-    // Compatibility alias so other scripts that expect "AllWavesCompleted" compile
     public bool AllWavesCompleted => AllWavesSpawned;
-
     public int CurrentWave => currentWaveIndex + 1;
 
+    // --- Server Side Logic ---
     public void StartFirstWave()
     {
+        if (!IsServer) return;
         currentWaveIndex = -1;
         SpawnNextWave();
+        Debug.Log("Starting first wave");
     }
 
     public void SpawnNextWave()
     {
+        if (!IsServer) return;
         if (AllWavesSpawned || isSpawning) return;
 
+        Debug.Log("Spawning next wave");
         currentWaveIndex++;
         StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
     }
@@ -65,44 +67,81 @@ public class WaveSpawner : MonoBehaviour
     private IEnumerator SpawnWaveCoroutine(EnemyWave wave)
     {
         isSpawning = true;
-        OnWaveStarted?.Invoke(currentWaveIndex + 1, wave);
+        
+        OnWaveStarted?.Invoke(currentWaveIndex + 1, wave); 
+        OnWaveStartedClientRpc(currentWaveIndex); 
 
         foreach (var group in wave.enemyGroups)
         {
             for (int i = 0; i < group.count; i++)
             {
                 GameObject enemyObj = Instantiate(group.enemyPrefab, spawnPoint.position, Quaternion.identity);
-                Enemies enemy = enemyObj.GetComponent<Enemies>();
-                enemy.Initialize(path, baseHealth);
+                
+                NetworkObject enemyNetObj = enemyObj.GetComponent<NetworkObject>();
+                if (enemyNetObj != null)
+                {
+                    enemyNetObj.Spawn(true); 
+                }
 
-                // Track and subscribe
-                activeEnemies.Add(enemy);
-                enemy.OnDeath += HandleEnemyDeath;
+                Enemy enemy = enemyObj.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.Initialize(path, baseHealth);
+                    
+                    activeEnemies.Add(enemy);
+                    enemy.OnDeath += HandleEnemyDeath;
+                }
 
                 yield return new WaitForSeconds(group.spawnInterval);
             }
         }
 
         isSpawning = false;
+        
         OnWaveCompleted?.Invoke(currentWaveIndex + 1);
+        OnWaveCompletedClientRpc(currentWaveIndex);
     }
 
-    public IReadOnlyList<Enemies> GetActiveEnemies()
-    {
-        return activeEnemies;
-    }
-
-
-    private void HandleEnemyDeath(Enemies enemy)
+    private void HandleEnemyDeath(Enemy enemy)
     {
         enemy.OnDeath -= HandleEnemyDeath;
         activeEnemies.Remove(enemy);
 
-        // If all waves spawned AND no active enemies remain
         if (AllWavesSpawned && activeEnemies.Count == 0)
         {
             OnAllEnemiesCleared?.Invoke();
+            OnAllEnemiesClearedClientRpc();
         }
+    }
+    
+    [ClientRpc]
+    private void OnWaveStartedClientRpc(int waveIndex)
+    {
+        if (IsHost) return;
+        
+        if (waveIndex >= 0 && waveIndex < waves.Length)
+        {
+            OnWaveStarted?.Invoke(waveIndex + 1, waves[waveIndex]);
+        }
+    }
+
+    [ClientRpc]
+    private void OnWaveCompletedClientRpc(int waveIndex)
+    {
+        if (IsHost) return;
+        OnWaveCompleted?.Invoke(waveIndex + 1);
+    }
+
+    [ClientRpc]
+    private void OnAllEnemiesClearedClientRpc()
+    {
+        if (IsHost) return;
+        OnAllEnemiesCleared?.Invoke();
+    }
+
+    public IReadOnlyList<Enemy> GetActiveEnemies()
+    {
+        return activeEnemies;
     }
 
     public int GetActiveEnemyCount()

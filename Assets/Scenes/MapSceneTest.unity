@@ -2836,56 +2836,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 209296617}
   m_CullTransparentMesh: 1
---- !u!1 &212000179
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 212000181}
-  - component: {fileID: 212000180}
-  m_Layer: 0
-  m_Name: SpawnManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &212000180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212000179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71e56ad5848a7774186ba1207a8289c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waves:
-  - {fileID: 11400000, guid: 14eb7079a91f0dd439b49d1e2cdcd911, type: 2}
-  - {fileID: 11400000, guid: a970f4c5a85ead94ea4aa9e70d0bf829, type: 2}
-  timeBetweenWaves: 5
-  spawnPoints:
-  - {fileID: 1788722332}
---- !u!4 &212000181
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212000179}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 473200825}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &224599273
 GameObject:
   m_ObjectHideFlags: 0
@@ -5730,7 +5680,6 @@ Transform:
   - {fileID: 1013785963}
   - {fileID: 693246573}
   - {fileID: 20568892}
-  - {fileID: 212000181}
   - {fileID: 516220055}
   - {fileID: 334290602}
   - {fileID: 1564392606}
@@ -6172,6 +6121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 513389365}
+  - component: {fileID: 513389367}
   - component: {fileID: 513389366}
   m_Layer: 0
   m_Name: WaveSpawner
@@ -6207,6 +6157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c23e84052d3264299e13b29371d102, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   waves:
   - waveName: First Wave
     enemyGroups:
@@ -6231,6 +6182,31 @@ MonoBehaviour:
   path: {fileID: 450520057}
   baseHealth: {fileID: 98384012}
   spawnPoint: {fileID: 384057352}
+--- !u!114 &513389367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513389364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1015190063
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &516220054
 GameObject:
   m_ObjectHideFlags: 0
@@ -6451,7 +6427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &530795191
 Transform:
   m_ObjectHideFlags: 0
@@ -16001,7 +15977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1383501379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16014,13 +15990,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c9e9d5fd6eaa74899bfd02077459f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 7
-  gameInput: {fileID: 1013785962}
   countersLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  collisionsLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   kitchenObjectHoldPoint: {fileID: 289910818}
+  spawnPositionList: []
   playerVisual: {fileID: 0}
+  playerVisualTransform: {fileID: 0}
   animator: {fileID: 1685020101}
 --- !u!4 &1383501380
 Transform:
@@ -22500,6 +22481,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bba05a0f161dfb429fe88bbe8b9fc6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerPrefab: {fileID: 0}
+  waveSpawner: {fileID: 0}
+  waveManager: {fileID: 0}
 --- !u!4 &2033961045
 Transform:
   m_ObjectHideFlags: 0

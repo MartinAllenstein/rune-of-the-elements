@@ -81,7 +81,7 @@ public class ActiveTower : MonoBehaviour
     {
         if (waveSpawner == null) return;
 
-        IReadOnlyList<Enemies> allEnemies = waveSpawner.GetActiveEnemies();
+        IReadOnlyList<Enemy> allEnemies = waveSpawner.GetActiveEnemies();
         if (allEnemies == null || allEnemies.Count == 0)
         {
             currentTarget = null;
@@ -92,7 +92,7 @@ public class ActiveTower : MonoBehaviour
         Transform closestEnemy = null;
         float closestDistanceToBase = Mathf.Infinity;
 
-        foreach (Enemies enemy in allEnemies)
+        foreach (Enemy enemy in allEnemies)
         {
             if (enemy == null) continue;
 

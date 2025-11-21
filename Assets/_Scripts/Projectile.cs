@@ -40,7 +40,7 @@ public class Projectile : MonoBehaviour
         // แสดง VFX ที่ตำแหน่งที่ชน (ถ้ามี)
         // Instantiate(impactEffect, transform.position, transform.rotation);
 
-        Enemies enemy = target.GetComponent<Enemies>();
+        Enemy enemy = target.GetComponent<Enemy>();
         if (enemy != null)
         {
             enemy.TakeDamage(towerData.damage, towerData.damageType);

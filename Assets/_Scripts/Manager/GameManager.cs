@@ -36,6 +36,9 @@ public class GameManager : NetworkBehaviour
     private Dictionary<ulong, bool> playerReadyDictionary;
     private Dictionary<ulong, bool> playerPausedDictionary;
     private bool autoTestGamePauseState;
+    
+    [SerializeField] private WaveSpawner waveSpawner;
+    [SerializeField] private WaveManager waveManager;
 
     
     private void Awake()
@@ -53,10 +56,8 @@ public class GameManager : NetworkBehaviour
         
         TheBase.OnBaseDestroyed += TheBase_OnBaseDestroyed;
         
-        if (FindFirstObjectByType<SpawnManager>() != null)
-        {
-            FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted += SpawnManager_OnAllWavesCompleted;
-        }
+        waveSpawner = FindFirstObjectByType<WaveSpawner>();
+        waveManager = FindFirstObjectByType<WaveManager>();
     }
 
     public override void OnNetworkSpawn()
@@ -68,7 +69,17 @@ public class GameManager : NetworkBehaviour
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+
+            if (waveSpawner != null)
+            {
+                waveSpawner.OnAllEnemiesCleared += WaveSpawner_OnAllEnemiesCleared;
+            }
         }
+    }
+    
+    private void WaveSpawner_OnAllEnemiesCleared()
+    {
+        state.Value = GameState.Victory;
     }
 
     private void SceneManager_OnLoadEventCompleted(string scenename, LoadSceneMode loadscenemode, List<ulong> clientscompleted, List<ulong> clientstimedout)
@@ -104,30 +115,39 @@ public class GameManager : NetworkBehaviour
     private void State_OnValueChanged(GameState previousvalue, GameState newvalue)
     {
         OnStateChanged?.Invoke(this, EventArgs.Empty);
+        
+        if (newvalue == GameState.GamePlaying)
+        {
+            if (waveManager != null)
+            {
+                Debug.Log("GameManager: WaveManager Is Working...");
+                waveManager.StartWaveSystem();
+            }
+            else
+            {
+                Debug.LogError("GameManager: Start Wave But waveManager Is null!");
+            }
+            //waveManager.StartWaveSystem();
+        }
     }
 
     private void OnDestroy()
     {
         TheBase.OnBaseDestroyed -= TheBase_OnBaseDestroyed;
-        if (FindFirstObjectByType<SpawnManager>() != null)
+
+        if (waveSpawner != null)
         {
-            FindFirstObjectByType<SpawnManager>().OnAllWavesCompleted -= SpawnManager_OnAllWavesCompleted;
+            waveSpawner.OnAllEnemiesCleared -= WaveSpawner_OnAllEnemiesCleared;
         }
     }
 
     private void TheBase_OnBaseDestroyed(object sender, EventArgs e)
     {
-        state.Value = GameState.GameOver;
-        //OnStateChanged?.Invoke(this, EventArgs.Empty);
+        if (IsServer)
+        {
+            state.Value = GameState.GameOver;
+        }
     }
-
-    private void SpawnManager_OnAllWavesCompleted(object sender, EventArgs e)
-    {
-        state.Value = GameState.Victory;
-        //OnStateChanged?.Invoke(this, EventArgs.Empty);
-    }
-    
-    
     
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {

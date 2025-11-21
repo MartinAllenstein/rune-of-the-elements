@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Unity.Netcode;
 
-public class WaveManager : MonoBehaviour
+public class WaveManager : NetworkBehaviour
 {
     [Header("References")]
     public WaveSpawner waveSpawner;

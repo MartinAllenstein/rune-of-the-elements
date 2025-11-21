@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy2 : MonoBehaviour
 {
-    public static event Action<Enemy> OnEnemyKilled;
+    public static event Action<Enemy2> OnEnemyKilled;
     
     [System.Serializable]
     public class DamageResistance
