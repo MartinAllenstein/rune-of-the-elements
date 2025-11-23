@@ -46,10 +46,10 @@ public class Enemy2 : MonoBehaviour
 
     private void Start()
     {
-        if (TheBase.Instance != null)
-        {
-            targetBase = TheBase.Instance.transform;
-        }
+        // if (TheBase.Instance != null)
+        // {
+        //     targetBase = TheBase.Instance.transform;
+        // }
     }
 
     private void FixedUpdate()
@@ -117,7 +117,7 @@ public class Enemy2 : MonoBehaviour
     
     private void AttackBase()
     {
-        TheBase.Instance.TakeDamage(attackDamage);
+        //TheBase.Instance.TakeDamage(attackDamage);
         // Attack Animation 
     }
     

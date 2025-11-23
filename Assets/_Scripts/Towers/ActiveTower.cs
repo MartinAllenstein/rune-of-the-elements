@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveTower : MonoBehaviour
+public class ActiveTower : MonoBehaviour, IHasProgress
 {
+    public event EventHandler <IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
+    
     [Header("Configuration")]
     [SerializeField] private TowerDataSO towerData;
     [SerializeField] private GameObject emptyTowerPrefab;
@@ -16,6 +19,8 @@ public class ActiveTower : MonoBehaviour
     private float targetUpdateInterval = 0.2f; // check for new targets every 0.2s
     private float targetUpdateTimer = 0f;
 
+    private float activeTimer;
+    
     private WaveSpawner waveSpawner;
 
     private void Start()
@@ -27,6 +32,8 @@ public class ActiveTower : MonoBehaviour
             rangeCollider.isTrigger = true;
         }
 
+        activeTimer = activeDuration;
+
         waveSpawner = FindFirstObjectByType<WaveSpawner>();
 
         StartCoroutine(DeactivateAfterTime());
@@ -34,6 +41,8 @@ public class ActiveTower : MonoBehaviour
 
     private void Update()
     {
+        HandleActiveTimer();
+        
         fireCountdown -= Time.deltaTime;
         targetUpdateTimer -= Time.deltaTime;
 
@@ -48,6 +57,16 @@ public class ActiveTower : MonoBehaviour
             Attack();
             fireCountdown = 1f / towerData.fireRate;
         }
+    }
+    
+    private void HandleActiveTimer()
+    {
+        activeTimer -= Time.deltaTime;
+
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+        {
+            progressNormalized = activeTimer / activeDuration
+        });
     }
 
     private IEnumerator DeactivateAfterTime()
@@ -88,7 +107,6 @@ public class ActiveTower : MonoBehaviour
             return;
         }
 
-        Transform baseTransform = TheBase.Instance.transform;
         Transform closestEnemy = null;
         float closestDistanceToBase = Mathf.Infinity;
 
@@ -99,11 +117,17 @@ public class ActiveTower : MonoBehaviour
             float distanceToTower = Vector3.Distance(transform.position, enemy.transform.position);
             if (distanceToTower > towerData.attackRadius) continue; // only consider enemies in range
 
-            float distanceToBase = Vector3.Distance(enemy.transform.position, baseTransform.position);
-            if (distanceToBase < closestDistanceToBase)
+            TheBase targetBase = TheBase.GetNearestBase(enemy.transform.position); 
+            
+            if (targetBase != null)
             {
-                closestDistanceToBase = distanceToBase;
-                closestEnemy = enemy.transform;
+                float distanceToBase = Vector3.Distance(enemy.transform.position, targetBase.transform.position);
+                
+                if (distanceToBase < closestDistanceToBase)
+                {
+                    closestDistanceToBase = distanceToBase;
+                    closestEnemy = enemy.transform;
+                }
             }
         }
 

@@ -27,3 +27,9 @@ MonoBehaviour:
     resultingTower: {fileID: 11400000, guid: fb925ecaa0d29bb4cb47989b2f69a2e3, type: 2}
   - elementType: {fileID: 11400000, guid: e0a95235b5e7b644981f4b17d7fc4e2e, type: 2}
     resultingTower: {fileID: 11400000, guid: 227a86c183d24ba428b5105aae8f4ae4, type: 2}
+  - elementType: {fileID: 11400000, guid: 1ceb8516b407aba4696bff248d79d405, type: 2}
+    resultingTower: {fileID: 11400000, guid: 147e31195f0302547ae02de5d630e2ab, type: 2}
+  - elementType: {fileID: 11400000, guid: b6e01d09c7c285f439cd8354242dcfbc, type: 2}
+    resultingTower: {fileID: 11400000, guid: 9e9464b28238dab4a9869c7ea599aaf7, type: 2}
+  - elementType: {fileID: 11400000, guid: bc52ee1cab3c308448fcc2a3c5681913, type: 2}
+    resultingTower: {fileID: 11400000, guid: 35f246235c559894cacb91612c5c7e8a, type: 2}

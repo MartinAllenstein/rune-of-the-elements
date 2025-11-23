@@ -5,31 +5,32 @@ using UnityEngine.UI;
 public class BaseUI : MonoBehaviour
 {
     [SerializeField] private Image healthBarImage;
+    [SerializeField] private TheBase targetBase;
 
     private void Start()
     {
-        if (TheBase.Instance == null)
+        if (targetBase == null)
         {
             gameObject.SetActive(false);
             return;
         }
 
-        TheBase.Instance.OnHealthChanged += TheBase_OnHealthChanged;
+        targetBase.OnHealthChanged += TheBase_OnHealthChanged;
 
-        healthBarImage.fillAmount = 1f;
+        healthBarImage.fillAmount = targetBase.GetHealthNormalized();
     }
 
     private void TheBase_OnHealthChanged(object sender, EventArgs e)
     {
         // HP UI
-        healthBarImage.fillAmount = TheBase.Instance.GetHealthNormalized();
+        healthBarImage.fillAmount = targetBase.GetHealthNormalized();
     }
 
     private void OnDestroy()
     {
-        if (TheBase.Instance != null)
+        if (targetBase != null)
         {
-            TheBase.Instance.OnHealthChanged -= TheBase_OnHealthChanged;
+            targetBase.OnHealthChanged -= TheBase_OnHealthChanged;
         }
     }
 }

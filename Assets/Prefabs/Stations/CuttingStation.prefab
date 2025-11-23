@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4230750132357258316
 Transform:
   m_ObjectHideFlags: 0
@@ -448,6 +448,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.209
       objectReference: {fileID: 0}
+    - target: {fileID: 6232912170768768614, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 23432904
+      objectReference: {fileID: 0}
     - target: {fileID: 7279442941294901000, guid: a8bea02aa4a2b7a4f89a20e034054bd1, type: 3}
       propertyPath: m_Name
       value: CuttingStation
@@ -497,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c6cf6eb6604a74c95e25b68c7a2021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 7741930706433729906}
   cuttingRecipeSOArray:
   - {fileID: 11400000, guid: 06b69a265d593a14a8651a6fc5ed4db8, type: 2}
