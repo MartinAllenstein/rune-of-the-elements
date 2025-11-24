@@ -1,10 +1,11 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : NetworkBehaviour
 {
     private Transform target;
     private TowerDataSO towerData;
-    private float moveSpeed = 20f; // ความเร็วของกระสุน
+    private float moveSpeed = 20f;
 
     public void Seek(Transform _target, TowerDataSO _towerData)
     {
@@ -14,10 +15,12 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
+        if (!IsServer) return;
+        
         // If the target is lost destroy the ammo
         if (target == null)
         {
-            gameObject.SetActive(false); // return Pool
+            GetComponent<NetworkObject>().Despawn();
             return;
         }
 
@@ -46,7 +49,6 @@ public class Projectile : MonoBehaviour
             enemy.TakeDamage(towerData.damage, towerData.damageType);
         }
 
-        // return Pool
-        gameObject.SetActive(false);
+        GetComponent<NetworkObject>().Despawn();
     }
 }

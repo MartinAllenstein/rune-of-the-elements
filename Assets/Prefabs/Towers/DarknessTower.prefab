@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DarknessTower
       objectReference: {fileID: 0}
+    - target: {fileID: 5534733554300218990, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1782036822
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

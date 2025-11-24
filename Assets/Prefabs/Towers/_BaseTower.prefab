@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 1056448989166281967}
   - component: {fileID: 7898925317201940392}
   - component: {fileID: 705890671321472778}
+  - component: {fileID: 5534733554300218990}
   - component: {fileID: 2852413568257038897}
   - component: {fileID: 1579543729279127593}
   m_Layer: 6
@@ -252,6 +253,31 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5534733554300218990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4312790372117518317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3693176781
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &2852413568257038897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,6 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dac108d07a980241aa6d3b573ef2e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   towerData: {fileID: 0}
   emptyTowerPrefab: {fileID: 4312790372117518317, guid: 414b07b7172f1f442b248e3b61ce09f4, type: 3}
   activeDuration: 10

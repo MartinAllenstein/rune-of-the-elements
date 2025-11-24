@@ -1,43 +1,69 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class TheBase : MonoBehaviour
+public class TheBase : NetworkBehaviour
 {
     public static List<TheBase> BaseList { get; private set; } = new List<TheBase>();
     public event EventHandler OnHealthChanged;
     public static event EventHandler OnBaseDestroyed;
 
     [SerializeField] private float maxHealth = 1000f;
-    private float currentHealth;
+    
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(1000f);
 
     private void Awake()
     {
         BaseList.Add(this);
-        currentHealth = maxHealth;
+    }
+    
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            currentHealth.Value = maxHealth;
+        }
+
+        currentHealth.OnValueChanged += OnCurrentHealthChanged;
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        currentHealth.OnValueChanged -= OnCurrentHealthChanged;
     }
     
     private void OnDestroy()
     {
         BaseList.Remove(this);
+        base.OnDestroy();
     }
 
+    private void OnCurrentHealthChanged(float previousValue, float newValue)
+    {
+        OnHealthChanged?.Invoke(this, EventArgs.Empty);
+    }
+    
     public void TakeDamage(float damageAmount)
     {
-        currentHealth -= damageAmount;
+        if (!IsServer) return;
         
-        OnHealthChanged?.Invoke(this, EventArgs.Empty);
+        currentHealth.Value -= damageAmount;
         
-        if (currentHealth <= 0)
+        if (currentHealth.Value <= 0)
         {
-            currentHealth = 0;
+            currentHealth.Value = 0;
             
             // Destroyed!!
             OnBaseDestroyed?.Invoke(this, EventArgs.Empty);
             Debug.Log("Base has been destroyed! GAME OVER.");
             
-            // gameObject.SetActive(false); 
         }
+    }
+    
+    public float GetHealthNormalized()
+    {
+        return currentHealth.Value / maxHealth;
     }
     
     public static TheBase GetNearestBase(Vector3 position)
@@ -59,8 +85,5 @@ public class TheBase : MonoBehaviour
         return nearestBase;
     }
 
-    public float GetHealthNormalized()
-    {
-        return currentHealth / maxHealth;
-    }
+    
 }

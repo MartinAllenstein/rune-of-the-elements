@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ActiveTower : MonoBehaviour, IHasProgress
+public class ActiveTower : NetworkBehaviour, IHasProgress
 {
     public event EventHandler <IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     
@@ -19,29 +20,31 @@ public class ActiveTower : MonoBehaviour, IHasProgress
     private float targetUpdateInterval = 0.2f; // check for new targets every 0.2s
     private float targetUpdateTimer = 0f;
 
-    private float activeTimer;
+    private NetworkVariable<float> activeTimer = new NetworkVariable<float>(0f);
     
     private WaveSpawner waveSpawner;
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        SphereCollider rangeCollider = GetComponent<SphereCollider>();
-        if (rangeCollider != null)
-        {
-            rangeCollider.radius = towerData.attackRadius;
-            rangeCollider.isTrigger = true;
-        }
-
-        activeTimer = activeDuration;
-
         waveSpawner = FindFirstObjectByType<WaveSpawner>();
 
-        StartCoroutine(DeactivateAfterTime());
+        if (IsServer)
+        {
+            activeTimer.Value = activeDuration;
+        }
     }
-
     private void Update()
     {
-        HandleActiveTimer();
+        HandleActiveTimerUI();
+        
+        if (!IsServer) return;
+
+        activeTimer.Value -= Time.deltaTime;
+        if (activeTimer.Value <= 0f)
+        {
+            HandleDeactivation();
+            return;
+        }
         
         fireCountdown -= Time.deltaTime;
         targetUpdateTimer -= Time.deltaTime;
@@ -59,40 +62,41 @@ public class ActiveTower : MonoBehaviour, IHasProgress
         }
     }
     
-    private void HandleActiveTimer()
+    private void HandleActiveTimerUI()
     {
-        activeTimer -= Time.deltaTime;
+        float progress = activeTimer.Value / activeDuration;
+        
+        progress = Mathf.Clamp01(progress);
 
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
         {
-            progressNormalized = activeTimer / activeDuration
+            progressNormalized = progress
         });
     }
-
-    private IEnumerator DeactivateAfterTime()
+    
+    private void HandleDeactivation()
     {
-        yield return new WaitForSeconds(activeDuration);
-        Instantiate(emptyTowerPrefab, transform.position, transform.rotation);
-        Destroy(gameObject);
+        // build EmptyTower
+        GameObject emptyTowerObj = Instantiate(emptyTowerPrefab, transform.position, transform.rotation);
+        emptyTowerObj.GetComponent<NetworkObject>().Spawn(true);
+
+        // destroy ActiveTower
+        GetComponent<NetworkObject>().Despawn(true);
     }
 
     private void Attack()
     {
         if (currentTarget == null) return;
 
-        GameObject projectileGO = ObjectPooler.Instance.SpawnFromPool(
-            towerData.projectilePoolTag,
-            firePoint.position,
-            firePoint.rotation
-        );
+        GameObject projectileGO = Instantiate(towerData.projectilePrefab, firePoint.position, firePoint.rotation);
+        
+        NetworkObject projectileNetObj = projectileGO.GetComponent<NetworkObject>();
+        projectileNetObj.Spawn(true);
 
-        if (projectileGO != null)
+        Projectile projectile = projectileGO.GetComponent<Projectile>();
+        if (projectile != null)
         {
-            Projectile projectile = projectileGO.GetComponent<Projectile>();
-            if (projectile != null)
-            {
-                projectile.Seek(currentTarget, towerData);
-            }
+            projectile.Seek(currentTarget, towerData);
         }
     }
 
@@ -115,7 +119,7 @@ public class ActiveTower : MonoBehaviour, IHasProgress
             if (enemy == null) continue;
 
             float distanceToTower = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToTower > towerData.attackRadius) continue; // only consider enemies in range
+            if (distanceToTower > towerData.attackRadius) continue; 
 
             TheBase targetBase = TheBase.GetNearestBase(enemy.transform.position); 
             

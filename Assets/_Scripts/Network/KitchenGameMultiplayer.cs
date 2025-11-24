@@ -324,4 +324,16 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         NetworkManager.Singleton.DisconnectClient(clientId);
         NetworkManager_Server_OnClientDisconnectCallback(clientId);
     }
+    
+    public Player GetPlayerFromClientId(ulong clientId)
+    {
+        foreach (var player in FindObjectsOfType<Player>())
+        {
+            if (player.OwnerClientId == clientId)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
 }
