@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class CauldronCounter : BaseCounter
@@ -17,40 +18,89 @@ public class CauldronCounter : BaseCounter
     {
         public KitchenObjectSO kitchenObjectSO;
     }
-    
+
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
     public class OnStateChangedEventArgs : EventArgs
     {
         public State state;
     }
-
-    private State currentState;
-    private float stateChangeTimer;
-    private const float STATE_CHANGE_INTERVAL = 10f;
+    
+    private NetworkVariable<State> currentState = new NetworkVariable<State>(State.Normal);
+    
     private List<KitchenObjectSO> kitchenObjectSOList = new List<KitchenObjectSO>();
     
+    //private float stateChangeTimer;
+    //private const float STATE_CHANGE_INTERVAL = 10f;
+    
 
-    private void Start()
+    // private void Start()
+    // {
+    //     currentState = State.Normal;
+    //     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = currentState });
+    // }
+    
+    public override void OnNetworkSpawn()
     {
-        currentState = State.Normal;
-        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = currentState });
+        currentState.OnValueChanged += CurrentState_OnValueChanged;
+        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = currentState.Value });
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        currentState.OnValueChanged -= CurrentState_OnValueChanged;
+    }
+
+    private void CurrentState_OnValueChanged(State previousValue, State newValue)
+    {
+        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = newValue });
     }
 
     private void Update()
     {
-        // stateChangeTimer += Time.deltaTime;
-        // if (stateChangeTimer >= STATE_CHANGE_INTERVAL)
-        // {
-        //     stateChangeTimer = 0;
-        //     currentState = (State)(((int)currentState + 1) % 3);
-        //     OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = currentState });
-        // }
+        /*
+        if (!IsServer) return;
+
+        stateChangeTimer += Time.deltaTime;
+        if (stateChangeTimer >= STATE_CHANGE_INTERVAL)
+        {
+            stateChangeTimer = 0;
+            // เปลี่ยน State และซิงค์ผ่าน NetworkVariable
+            currentState.Value = (State)(((int)currentState.Value + 1) % 3);
+        }
+        */
         
     }
     
     public override void InteractAlternate(Player player)
     {
-        Cook();
+        if (kitchenObjectSOList.Count > 0 && !HasKitchenObject())
+        {
+            CookServerRpc();
+        }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void CookServerRpc()
+    {
+        if (CauldronManager.Instance.TryGetRecipe(kitchenObjectSOList, out var recipe))
+        {
+            KitchenObject.SpawnKitchenObject(recipe.output, this);
+            
+            // Note (For ClientRpc Effect)
+            // CookSuccessClientRpc(); 
+        }
+        else
+        {
+            // CookFailedClientRpc();
+        }
+        ClearIngredientsClientRpc();
+    }
+    
+    [ClientRpc]
+    private void ClearIngredientsClientRpc()
+    {
+        kitchenObjectSOList.Clear();
+        OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs { kitchenObjectSO = null });
     }
     
     public override void Interact(Player player)
@@ -68,7 +118,7 @@ public class CauldronCounter : BaseCounter
             {
                 if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                 {
-                    GetKitchenObject().DestroySelf();
+                    KitchenObject.DestroyKitchenObject(GetKitchenObject());
                 }
             }
         }
@@ -79,15 +129,15 @@ public class CauldronCounter : BaseCounter
             {
                 var kitchenObjectSO = player.GetKitchenObject().GetKitchenObjectSO();
 
-                switch (currentState)
+                switch (currentState.Value)
                 {
                     case State.Normal:
-                        AddIngredient(player);
+                        ValidateAndAddIngredient(player, kitchenObjectSO);
                         break;
                     case State.Hot:
                         if (kitchenObjectSO.ingredientType != IngredientType.Liquid && kitchenObjectSO.ingredientType != IngredientType.MagicLiquid)
                         {
-                            AddIngredient(player);
+                            ValidateAndAddIngredient(player, kitchenObjectSO);
                         }
                         else
                         {
@@ -97,7 +147,7 @@ public class CauldronCounter : BaseCounter
                     case State.Cold:
                         if (kitchenObjectSO.ingredientType != IngredientType.Solid)
                         {
-                            AddIngredient(player);
+                            ValidateAndAddIngredient(player, kitchenObjectSO);
                         }
                         else
                         {
@@ -110,37 +160,32 @@ public class CauldronCounter : BaseCounter
         }
     }
 
-    private void AddIngredient(Player player)
+    private void ValidateAndAddIngredient(Player player, KitchenObjectSO kitchenObjectSO)
     {
-        var kitchenObjectSO = player.GetKitchenObject().GetKitchenObjectSO();
+        int kitchenObjectSOIndex = KitchenGameMultiplayer.Instance.GetKitchenObjectSOIndex(kitchenObjectSO);
+        AddIngredientServerRpc(kitchenObjectSOIndex);
+        
+        KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddIngredientServerRpc(int kitchenObjectSOIndex)
+    {
+        AddIngredientClientRpc(kitchenObjectSOIndex);
+    }
+
+    [ClientRpc]
+    private void AddIngredientClientRpc(int kitchenObjectSOIndex)
+    {
+        KitchenObjectSO kitchenObjectSO = KitchenGameMultiplayer.Instance.GetKitchenObjectSOFromIndex(kitchenObjectSOIndex);
+        
         kitchenObjectSOList.Add(kitchenObjectSO);
         
         OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs { kitchenObjectSO = kitchenObjectSO });
         
-        player.GetKitchenObject().DestroySelf();
-        Debug.Log("Added " + kitchenObjectSO.objectName);
+        // Debug.Log("Added " + kitchenObjectSO.objectName);
     }
 
-    private void Cook()
-    {
-        // Only cook if the cauldron is empty (no previous output sitting there)
-        if (kitchenObjectSOList.Count > 0 && !HasKitchenObject())
-        {
-            if (CauldronManager.Instance.TryGetRecipe(kitchenObjectSOList, out var recipe))
-            {
-                Debug.Log("Recipe success! Creating " + recipe.RecipeName);
-                KitchenObject.SpawnKitchenObject(recipe.output, this);
-            }
-            else
-            {
-                Debug.Log("Recipe failed!");
-            }
-            kitchenObjectSOList.Clear();
-            
-            OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs { kitchenObjectSO = null });
-            
-        }
-    }
     public List<KitchenObjectSO> GetKitchenObjectSOList()
     {
         return kitchenObjectSOList;
