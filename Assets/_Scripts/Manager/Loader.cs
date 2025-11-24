@@ -9,7 +9,7 @@ public static class Loader
         MainMenuScene,
         LoadingScene,
         MapScene1,
-        MapScene2,
+        Test_Scene,
         LobbyScene,
         CharacterSelectScene,
     }

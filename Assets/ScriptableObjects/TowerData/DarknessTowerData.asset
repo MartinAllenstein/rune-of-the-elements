@@ -17,6 +17,32 @@ MonoBehaviour:
   damage: 20
   damageType: {fileID: 11400000, guid: d574fe535b086ff4aa4f92990e60280f, type: 2}
   fireRate: 2
-  attackRadius: 10
+  attackRadius: 20
   projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
   projectilePoolTag: LightningBolt
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.0236202
+      value: 0.00030316226
+      inSlope: -1.9921503
+      outSlope: -1.9921503
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.17692737
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 10

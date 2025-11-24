@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: towerData
       value: 
       objectReference: {fileID: 11400000, guid: 227a86c183d24ba428b5105aae8f4ae4, type: 2}
+    - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: activeDuration
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Sprite
       value: 

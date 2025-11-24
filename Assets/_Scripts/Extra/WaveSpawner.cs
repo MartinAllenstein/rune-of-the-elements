@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 [System.Serializable]
 public class EnemyGroup
@@ -26,10 +28,10 @@ public class EnemyWave
 public class WaveSpawner : NetworkBehaviour
 {
     [Header("References")]
-    public EnemyWave[] waves;
-    public WaypointPath path;
-    public TheBase baseHealth;
-    public Transform spawnPoint;
+    [SerializeField] public EnemyWave[] waves;
+    [SerializeField] private WaypointPath[] paths;
+    [SerializeField] private TheBase baseHealth; // Old not use
+    //[SerializeField] private Transform spawnPoint;
 
     private int currentWaveIndex = -1;
     private bool isSpawning = false;
@@ -75,7 +77,11 @@ public class WaveSpawner : NetworkBehaviour
         {
             for (int i = 0; i < group.count; i++)
             {
-                GameObject enemyObj = Instantiate(group.enemyPrefab, spawnPoint.position, Quaternion.identity);
+                WaypointPath chosenPath = paths[Random.Range(0, paths.Length)];
+                
+                Vector3 spawnPos = chosenPath.GetWaypoint(0).position;
+                
+                GameObject enemyObj = Instantiate(group.enemyPrefab, spawnPos, Quaternion.identity);
                 
                 NetworkObject enemyNetObj = enemyObj.GetComponent<NetworkObject>();
                 if (enemyNetObj != null)
@@ -86,7 +92,7 @@ public class WaveSpawner : NetworkBehaviour
                 Enemy enemy = enemyObj.GetComponent<Enemy>();
                 if (enemy != null)
                 {
-                    enemy.Initialize(path, baseHealth);
+                    enemy.Initialize(chosenPath, baseHealth);
                     
                     activeEnemies.Add(enemy);
                     enemy.OnDeath += HandleEnemyDeath;
@@ -142,10 +148,5 @@ public class WaveSpawner : NetworkBehaviour
     public IReadOnlyList<Enemy> GetActiveEnemies()
     {
         return activeEnemies;
-    }
-
-    public int GetActiveEnemyCount()
-    {
-        return activeEnemies.Count;
     }
 }

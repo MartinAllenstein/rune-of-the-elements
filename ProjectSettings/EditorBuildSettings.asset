@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MapScene1.unity
     guid: 80247971432bc5c459f568f651e8ddf8
   - enabled: 0
-    path: Assets/Scenes/MapScene2.unity
+    path: "Assets/Scenes/MapScene\u0E3ABackUp.unity"
     guid: ab218106ed8dd1041a2b21ab1c413e31
   - enabled: 0
     path: Assets/Scenes/MapSceneTest.unity
@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CharacterSelectScene.unity
     guid: aa55723f8e9659b45ba83a833e6a5bce
+  - enabled: 1
+    path: Assets/Scenes/Test_Scene.unity
+    guid: b6e6bf8d71706ed4a90e06e32d4012e1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

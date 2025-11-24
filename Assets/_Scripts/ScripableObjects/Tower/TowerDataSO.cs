@@ -16,4 +16,9 @@ public class TowerDataSO : ScriptableObject
     [Header("Projectile")]
     public GameObject projectilePrefab;
     public string projectilePoolTag; // Tag for Object Pooler
+    
+    [Header("Trajectory")]
+    public bool useArc;
+    public AnimationCurve arcCurve;
+    public float arcHeight = 2f; // ความสูงสูงสุดของส่วนโค้ง
 }
