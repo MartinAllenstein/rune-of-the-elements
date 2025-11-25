@@ -52,6 +52,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3659136041432644326, guid: db422e7a08f0d71449944b79aee7cb08, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2947013994
+      objectReference: {fileID: 0}
+    - target: {fileID: 5198384851082946890, guid: db422e7a08f0d71449944b79aee7cb08, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5424528
+      objectReference: {fileID: 0}
+    - target: {fileID: 5198384851082946890, guid: db422e7a08f0d71449944b79aee7cb08, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5198384851082946890, guid: db422e7a08f0d71449944b79aee7cb08, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9824567
+      objectReference: {fileID: 0}
     - target: {fileID: 6641871452217315223, guid: db422e7a08f0d71449944b79aee7cb08, type: 3}
       propertyPath: kitchenObjectSO
       value: 

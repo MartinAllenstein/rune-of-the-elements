@@ -11,6 +11,12 @@ public class GameVictoryUI : MonoBehaviour
     
     private void Awake()
     {
+        if (!NetworkManager.Singleton.IsServer) 
+        {
+            mainMenuButton.gameObject.SetActive(false);
+            nextLevelButton.gameObject.SetActive(false);
+        }
+        
         mainMenuButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.Shutdown();

@@ -25,11 +25,10 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     }
     
     [SerializeField] private float moveSpeed;
-    //[SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private LayerMask collisionsLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
-    [SerializeField] private List<Vector3> spawnPositionList;
+    //[SerializeField] private List<Vector3> spawnPositionList;
     [SerializeField] private PlayerVisual playerVisual;
     
     private bool isWalking;
@@ -54,8 +53,13 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
             LocalInstance = this;
         }
 
-        transform.position = spawnPositionList[KitchenGameMultiplayer.Instance.GetPlayerDataIndexFromClientId(OwnerClientId)];
-
+        int playerIndex = KitchenGameMultiplayer.Instance.GetPlayerDataIndexFromClientId(OwnerClientId);
+        
+        if (PlayerSpawnPoints.Instance != null) 
+        {
+            transform.position = PlayerSpawnPoints.Instance.GetSpawnPosition(playerIndex);
+        }
+        
         playerVisualScaleX.OnValueChanged += OnPlayerVisualScaleXChanged;
 
         if (playerVisualTransform != null)

@@ -11,6 +11,18 @@ public class GameOverUI : MonoBehaviour
 
     private void Awake()
     {
+        if (!NetworkManager.Singleton.IsServer) 
+        {
+            mainMenuButton.gameObject.SetActive(false);
+            restartButton.gameObject.SetActive(false);
+        }
+        
+        mainMenuButton.onClick.AddListener(() =>
+        {
+            NetworkManager.Singleton.Shutdown();
+            Loader.Load(Loader.Scene.MainMenuScene);
+        });
+        
         mainMenuButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.Shutdown();

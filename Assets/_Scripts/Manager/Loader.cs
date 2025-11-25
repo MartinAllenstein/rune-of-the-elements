@@ -9,7 +9,7 @@ public static class Loader
         MainMenuScene,
         LoadingScene,
         MapScene1,
-        Test_Scene,
+        MapLevel2,
         LobbyScene,
         CharacterSelectScene,
     }
@@ -34,7 +34,15 @@ public static class Loader
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             // Load Next Scene
-            SceneManager.LoadScene(nextSceneIndex);
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                string nextSceneName = GetSceneNameFromBuildIndex(nextSceneIndex);
+                NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+            }
+            else
+            {
+                SceneManager.LoadScene(nextSceneIndex);
+            }
         }
         else
         {
@@ -45,7 +53,15 @@ public static class Loader
     
     public static void ReloadCurrentLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            NetworkManager.Singleton.SceneManager.LoadScene(currentSceneName, LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
 
@@ -57,5 +73,14 @@ public static class Loader
     public static void LoaderCallback()
     {
         SceneManager.LoadScene(targetScene.ToString());
+    }
+    
+    private static string GetSceneNameFromBuildIndex(int buildIndex)
+    {
+        string path = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+        int slash = path.LastIndexOf('/');
+        string name = path.Substring(slash + 1);
+        int dot = name.LastIndexOf('.');
+        return name.Substring(0, dot);
     }
 }
