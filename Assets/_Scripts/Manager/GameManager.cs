@@ -77,6 +77,23 @@ public class GameManager : NetworkBehaviour
         }
     }
     
+    public override void OnNetworkDespawn()
+    {
+        state.OnValueChanged -= State_OnValueChanged;
+        isGamePaused.OnValueChanged -= IsGamePaused_OnValueChanged;
+
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneManager_OnLoadEventCompleted;
+            
+            if (waveSpawner != null)
+            {
+                waveSpawner.OnAllEnemiesCleared -= WaveSpawner_OnAllEnemiesCleared;
+            }
+        }
+    }
+    
     private void WaveSpawner_OnAllEnemiesCleared()
     {
         state.Value = GameState.Victory;
@@ -134,11 +151,6 @@ public class GameManager : NetworkBehaviour
     private void OnDestroy()
     {
         TheBase.OnBaseDestroyed -= TheBase_OnBaseDestroyed;
-
-        if (waveSpawner != null)
-        {
-            waveSpawner.OnAllEnemiesCleared -= WaveSpawner_OnAllEnemiesCleared;
-        }
     }
 
     private void TheBase_OnBaseDestroyed(object sender, EventArgs e)
@@ -189,6 +201,13 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
+        // --- CHEAT CODE ---
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            DebugTriggerVictoryServerRpc();
+        }
+        // --- CHEAT CODE ---
+        
         if (!IsServer)
         {
             return;
@@ -215,6 +234,13 @@ public class GameManager : NetworkBehaviour
                 // For The UI
                 break;
         }
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void DebugTriggerVictoryServerRpc()
+    {
+        Debug.Log("Cheat Code Activated: Victory!");
+        state.Value = GameState.Victory;
     }
 
     private void LateUpdate()

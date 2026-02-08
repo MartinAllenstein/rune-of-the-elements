@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 147e31195f0302547ae02de5d630e2ab, type: 2}
     - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: activeDuration
-      value: 15
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Sprite

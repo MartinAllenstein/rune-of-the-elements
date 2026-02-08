@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Life Tower
   towerPrefab: {fileID: 4814244353485638153, guid: fdd5f55760a34c0409fb7aa779b45950, type: 3}
-  damage: 20
+  attackType: 0
+  damage: 18
   damageType: {fileID: 11400000, guid: 55b4055c4de9d6e43a3099123ce080c3, type: 2}
-  fireRate: 2
-  attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
-  projectilePoolTag: LightningBolt
+  fireRate: 1.5
+  attackRadius: 9
+  projectilePrefab: {fileID: 4869749521906743283, guid: e4287dbda2aacac41883d81a835395a6, type: 3}
+  projectilePoolTag: 
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -5575068448607203441}
   - component: {fileID: 3915903305937227581}
   - component: {fileID: 8651779568444677671}
+  - component: {fileID: 7112571253096993150}
   m_Layer: 8
   m_Name: _BaseMushroom
   m_TagString: Untagged
@@ -99,13 +100,13 @@ MonoBehaviour:
   animator: {fileID: 5323688706605193833}
   visualTransform: {fileID: 3888986360264284310}
   moveSpeed: 1.5
-  maxHealth: 30
+  maxHealth: 400
   resistances:
   - damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}
     resistancePercentage: 0.5
-  damage: 10
-  attackRange: 1
-  attackCooldown: 1
+  damage: 25
+  attackRange: 1.5
+  attackCooldown: 2
 --- !u!114 &8651779568444677671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +153,33 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!54 &7112571253096993150
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285713437052349106}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &3603066811803463116
 GameObject:
   m_ObjectHideFlags: 0

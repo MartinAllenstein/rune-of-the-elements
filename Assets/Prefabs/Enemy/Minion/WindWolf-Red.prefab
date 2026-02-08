@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 6633f7371dbfa304fb44cda363b8a369, type: 3}
+    - target: {fileID: 3915903305937227581, guid: 744b3c3fb08c9774ba65308a31d545b7, type: 3}
+      propertyPath: resistances.Array.data[0].damageType
+      value: 
+      objectReference: {fileID: 11400000, guid: 59b5021de367a4444b8b6c9dbed00f5b, type: 2}
     - target: {fileID: 5323688706605193833, guid: 744b3c3fb08c9774ba65308a31d545b7, type: 3}
       propertyPath: m_Controller
       value: 

@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 35f246235c559894cacb91612c5c7e8a, type: 2}
     - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: activeDuration
-      value: 15
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Sprite
@@ -67,6 +67,10 @@ PrefabInstance:
     - target: {fileID: 4312790372117518317, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Name
       value: Lighting+WaterTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534733554300218990, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1465957072
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

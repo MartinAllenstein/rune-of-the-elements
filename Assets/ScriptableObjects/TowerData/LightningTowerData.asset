@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Lightning Tower
   towerPrefab: {fileID: 7625084149284486248, guid: 0f5abff1fd3c9af44aa51ea44f7cbf24, type: 3}
-  damage: 20
+  attackType: 0
+  damage: 15
   damageType: {fileID: 11400000, guid: f419a76889731af44a8c0bcfd382350b, type: 2}
-  fireRate: 2
-  attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
+  fireRate: 1.2
+  attackRadius: 9
+  projectilePrefab: {fileID: 513753601277904641, guid: 1e6a5d5c8495e1b458dd3a7056417446, type: 3}
   projectilePoolTag: LightningBolt
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 2
+  chainRange: 4
+  chainDamageMultiplier: 0.9

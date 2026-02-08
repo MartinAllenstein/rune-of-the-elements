@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 285713437052349106, guid: f409467a7323fc14786f22a505f93121, type: 3}
       propertyPath: m_Name
-      value: MushroomBrown
+      value: Mushroom-Brown
       objectReference: {fileID: 0}
     - target: {fileID: 412001797388199415, guid: f409467a7323fc14786f22a505f93121, type: 3}
       propertyPath: m_Controller
@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 43700cc69ba98db41b014fa035d439ec, type: 3}
+    - target: {fileID: 3915903305937227581, guid: f409467a7323fc14786f22a505f93121, type: 3}
+      propertyPath: resistances.Array.data[0].damageType
+      value: 
+      objectReference: {fileID: 11400000, guid: bbf833d1ff5a86640aefa778d19ef2a9, type: 2}
     - target: {fileID: 5323688706605193833, guid: f409467a7323fc14786f22a505f93121, type: 3}
       propertyPath: m_Controller
       value: 

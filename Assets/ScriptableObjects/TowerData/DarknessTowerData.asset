@@ -14,35 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Darkness Tower
   towerPrefab: {fileID: 1169420634929067963, guid: fb55cd8823bdf734594321039c06c5b9, type: 3}
-  damage: 20
+  attackType: 2
+  damage: 10
   damageType: {fileID: 11400000, guid: d574fe535b086ff4aa4f92990e60280f, type: 2}
-  fireRate: 2
-  attackRadius: 20
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
-  projectilePoolTag: LightningBolt
+  fireRate: 0.8
+  attackRadius: 8.5
+  projectilePrefab: {fileID: 6227680326847629763, guid: afe4d45d740eff04f834ab52f11051e5, type: 3}
+  projectilePoolTag: 
   useArc: 0
   arcCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1.0236202
-      value: 0.00030316226
-      inSlope: -1.9921503
-      outSlope: -1.9921503
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.17692737
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  arcHeight: 10
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 7432159660359854678, guid: bdb14c4c26fdadf40995c7eac8cbc167, type: 3}
+  zoneDuration: 2
+  zoneTickRate: 0.5
+  slowMultiplier: 1
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

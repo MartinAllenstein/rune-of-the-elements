@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: towerData
       value: 
       objectReference: {fileID: 11400000, guid: 4b7acd4268e563f48b6b088e13dcaa4d, type: 2}
+    - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: activeDuration
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -63,6 +67,10 @@ PrefabInstance:
     - target: {fileID: 4312790372117518317, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Name
       value: WaterTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534733554300218990, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2963983207
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

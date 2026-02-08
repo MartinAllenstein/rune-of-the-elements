@@ -40,7 +40,6 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     private NetworkVariable<float> playerVisualScaleX = new NetworkVariable<float>(1f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     
     [SerializeField] private Transform playerVisualTransform; 
-    //public SpriteRenderer spriteRenderer;
     public Animator animator;
 
     private const string IS_WALKING = "IsWalking";

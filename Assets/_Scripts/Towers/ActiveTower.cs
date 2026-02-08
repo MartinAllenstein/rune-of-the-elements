@@ -13,6 +13,11 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
     [SerializeField] private GameObject emptyTowerPrefab;
     [SerializeField] private float activeDuration = 10f;
     [SerializeField] private Transform firePoint;
+    
+    [Header("Visuals")]
+    [SerializeField] private LineRenderer rangeLineRenderer;
+    [SerializeField] private int circleSegments = 50; // ความละเอียดของวงกลม
+    [SerializeField] private float lineWidth = 0.1f; // ความหนาของเส้น
 
     [Header("Targeting")]
     private Transform currentTarget;
@@ -23,6 +28,8 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
     private NetworkVariable<float> activeTimer = new NetworkVariable<float>(0f);
     
     private WaveSpawner waveSpawner;
+    
+    private bool isChargingAttack = false;
 
     public override void OnNetworkSpawn()
     {
@@ -32,6 +39,7 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
         {
             activeTimer.Value = activeDuration;
         }
+        SetupRangeCircle();
     }
     private void Update()
     {
@@ -46,7 +54,6 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
             return;
         }
         
-        fireCountdown -= Time.deltaTime;
         targetUpdateTimer -= Time.deltaTime;
 
         if (targetUpdateTimer <= 0f)
@@ -55,10 +62,114 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
             UpdateTargetOptimized();
         }
 
+        fireCountdown -= Time.deltaTime;
+        
         if (currentTarget != null && fireCountdown <= 0f)
         {
-            Attack();
-            fireCountdown = 1f / towerData.fireRate;
+            if (towerData.attackType == TowerDataSO.AttackType.Projectile)
+            {
+                ShootProjectile();
+                fireCountdown = 1f / towerData.fireRate;
+            }
+            else if (towerData.attackType == TowerDataSO.AttackType.AreaOfEffect)
+            {
+                if (!isChargingAttack)
+                {
+                    StartCoroutine(ExplosionAttackRoutine());
+                }
+            }
+            else if (towerData.attackType == TowerDataSO.AttackType.DamageZone) 
+            {
+                // --- Damage Zone ---
+                SpawnDamageZone();
+                fireCountdown = 1f / towerData.fireRate;
+            }
+        }
+    }
+    
+    private void SpawnDamageZone()
+    {
+        if (towerData.zonePrefab == null) return;
+
+        GameObject zoneObj = Instantiate(towerData.zonePrefab, currentTarget.position, Quaternion.identity);
+        
+        zoneObj.GetComponent<NetworkObject>().Spawn(true);
+
+        DamageZone zoneScript = zoneObj.GetComponent<DamageZone>();
+        if (zoneScript != null)
+        {
+            zoneScript.Initialize(
+                towerData.damage, 
+                towerData.damageType, 
+                towerData.slowMultiplier, 
+                towerData.zoneDuration, 
+                towerData.zoneTickRate
+            );
+        }
+    }
+    
+    private void ShootProjectile()
+    {
+        GameObject projectileGO = Instantiate(towerData.projectilePrefab, firePoint.position, firePoint.rotation);
+        NetworkObject projectileNetObj = projectileGO.GetComponent<NetworkObject>();
+        projectileNetObj.Spawn(true);
+
+        Projectile projectile = projectileGO.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            projectile.Seek(currentTarget, towerData);
+        }
+    }
+    
+    private IEnumerator ExplosionAttackRoutine()
+    {
+        isChargingAttack = true;
+
+        PlayChargeVfxClientRpc();
+
+        yield return new WaitForSeconds(towerData.chargeTime);
+
+        if (this == null || !IsSpawned) yield break;
+
+        PlayExplosionVfxClientRpc();
+
+        DealExplosionDamage();
+
+        fireCountdown = 1f / towerData.fireRate;
+        isChargingAttack = false;
+    }
+    
+    private void DealExplosionDamage()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, towerData.explosionRadius);
+
+        foreach (var hit in hits)
+        {
+            Enemy enemy = hit.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(towerData.damage, towerData.damageType);
+            }
+        }
+    }
+    
+    [ClientRpc]
+    private void PlayChargeVfxClientRpc()
+    {
+        if (towerData.chargeVfxPrefab != null)
+        {
+            GameObject vfx = Instantiate(towerData.chargeVfxPrefab, transform.position, Quaternion.identity);
+            Destroy(vfx, towerData.chargeTime + 0.5f);
+        }
+    }
+
+    [ClientRpc]
+    private void PlayExplosionVfxClientRpc()
+    {
+        if (towerData.explosionVfxPrefab != null)
+        {
+            GameObject vfx = Instantiate(towerData.explosionVfxPrefab, transform.position, Quaternion.identity);
+            Destroy(vfx, 2f);
         }
     }
     
@@ -143,5 +254,40 @@ public class ActiveTower : NetworkBehaviour, IHasProgress
         if (towerData == null) return;
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, towerData.attackRadius);
+        
+        if (towerData.attackType == TowerDataSO.AttackType.AreaOfEffect)
+        {
+            Gizmos.color = new Color(1, 0.5f, 0, 0.5f);
+            Gizmos.DrawSphere(transform.position, towerData.explosionRadius);
+        }
+    }
+    private void SetupRangeCircle()
+    {
+        if (rangeLineRenderer == null || towerData == null) return;
+
+        rangeLineRenderer.positionCount = circleSegments + 1;
+        rangeLineRenderer.useWorldSpace = false;
+        rangeLineRenderer.startWidth = lineWidth;
+        rangeLineRenderer.endWidth = lineWidth;
+        rangeLineRenderer.loop = true;
+        
+        if (rangeLineRenderer.material == null) 
+            rangeLineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        
+        rangeLineRenderer.startColor = new Color(1f, 1f, 1f, 0.5f);
+        rangeLineRenderer.endColor = new Color(1f, 1f, 1f, 0.5f);
+
+        float angle = 0f;
+        float radius = towerData.attackRadius;
+
+        for (int i = 0; i <= circleSegments; i++)
+        {
+            float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+            float z = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+
+            rangeLineRenderer.SetPosition(i, new Vector3(x, 0.1f, z));
+
+            angle += (360f / circleSegments);
+        }
     }
 }

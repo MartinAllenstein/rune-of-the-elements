@@ -15,11 +15,17 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadingScene.unity
     guid: e3fae779df1e00745bcedeffd50c4214
   - enabled: 1
-    path: Assets/Scenes/MapScene1.unity
+    path: Assets/Scenes/MapLevel1.unity
     guid: 80247971432bc5c459f568f651e8ddf8
   - enabled: 1
     path: Assets/Scenes/MapLevel2.unity
     guid: e39f072250d6eb94b957ac8a332d59d1
+  - enabled: 1
+    path: Assets/Scenes/MapLevel3.unity
+    guid: c78045ee5b97e9846a643cf8920a8300
+  - enabled: 1
+    path: Assets/Scenes/MapLevel4.unity
+    guid: 002bb232bf5b61c46b3e2a73f1e6bef5
   - enabled: 1
     path: Assets/Scenes/CharacterSelectScene.unity
     guid: aa55723f8e9659b45ba83a833e6a5bce

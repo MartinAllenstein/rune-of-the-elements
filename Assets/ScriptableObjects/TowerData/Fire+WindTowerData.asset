@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Fire+Wind Tower
   towerPrefab: {fileID: 5467485899128566745, guid: d230e4cf858d8dd4c88139550adb6892, type: 3}
-  damage: 20
+  attackType: 1
+  damage: 50
   damageType: {fileID: 11400000, guid: 59b5021de367a4444b8b6c9dbed00f5b, type: 2}
-  fireRate: 2
-  attackRadius: 10
+  fireRate: 1
+  attackRadius: 9.5
   projectilePrefab: {fileID: 8902273583184186908, guid: 8c80ef42d5a8d0b4bad0934e01aee4a7, type: 3}
   projectilePoolTag: FireBolt
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 0.5
+  explosionRadius: 9
+  chargeVfxPrefab: {fileID: 5732568103209889489, guid: 6b028b81d78aea44e8819d5676e2254f, type: 3}
+  explosionVfxPrefab: {fileID: 4550076289710732121, guid: f62203fb6ab32104fa72cd4bf43dbf40, type: 3}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

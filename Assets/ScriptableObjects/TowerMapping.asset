@@ -31,5 +31,11 @@ MonoBehaviour:
     resultingTower: {fileID: 11400000, guid: 147e31195f0302547ae02de5d630e2ab, type: 2}
   - elementType: {fileID: 11400000, guid: b6e01d09c7c285f439cd8354242dcfbc, type: 2}
     resultingTower: {fileID: 11400000, guid: 9e9464b28238dab4a9869c7ea599aaf7, type: 2}
+  - elementType: {fileID: 11400000, guid: 822deb6024c703742af5ec5e1bda46b8, type: 2}
+    resultingTower: {fileID: 11400000, guid: 4351a7d8ea2a57f4d80c3ee4f8259bb5, type: 2}
   - elementType: {fileID: 11400000, guid: bc52ee1cab3c308448fcc2a3c5681913, type: 2}
     resultingTower: {fileID: 11400000, guid: 35f246235c559894cacb91612c5c7e8a, type: 2}
+  - elementType: {fileID: 11400000, guid: 8ef2f36ddf0c893438d6765a9f1f19f2, type: 2}
+    resultingTower: {fileID: 11400000, guid: 14e55e18674b2824bb7629707202187c, type: 2}
+  - elementType: {fileID: 11400000, guid: c414f0ce51b0ad14591952fd3d13f400, type: 2}
+    resultingTower: {fileID: 11400000, guid: 53997cd972328984c98be8915d91dcbc, type: 2}

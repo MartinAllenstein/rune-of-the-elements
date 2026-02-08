@@ -1,16 +1,17 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class MortarCounter : BaseCounter, IHasProgress
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
-    public event EventHandler OnGrind; // for Music/Animation
+    public event EventHandler OnGrind; // สำหรับเล่นเสียง/Animation
 
     [SerializeField] private MortarRecipeSO[] mortarRecipeSOArray;
 
-    private float grindingTimer;
-    private bool isGrinding;
-    private MortarRecipeSO currentRecipe;
+    // เปลี่ยนตัวแปรธรรมดาเป็น NetworkVariable เพื่อซิงค์ข้อมูล
+    private NetworkVariable<float> grindingTimer = new NetworkVariable<float>(0f);
+    private NetworkVariable<bool> isGrinding = new NetworkVariable<bool>(false);
 
     private void Start()
     {
@@ -18,100 +19,163 @@ public class MortarCounter : BaseCounter, IHasProgress
         GameInput.Instance.OnInteractAlternateActionCanceled += GameInput_OnInteractAlternateActionCanceled;
     }
 
-    private void OnDestroy()
+    public override void OnNetworkSpawn()
     {
-        if (GameInput.Instance != null)
+        // เมื่อค่า Timer เปลี่ยน ให้ Client อัปเดต UI
+        grindingTimer.OnValueChanged += GrindingTimer_OnValueChanged;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        grindingTimer.OnValueChanged -= GrindingTimer_OnValueChanged;
+    }
+
+    private void GrindingTimer_OnValueChanged(float previousValue, float newValue)
+    {
+        // คำนวณ Progress Bar ฝั่ง Client
+        float grindingTimerMax = 1f;
+        if (HasKitchenObject())
         {
-            GameInput.Instance.OnInteractAlternateActionStarted -= GameInput_OnInteractAlternateActionStarted;
-            GameInput.Instance.OnInteractAlternateActionCanceled -= GameInput_OnInteractAlternateActionCanceled;
+            MortarRecipeSO recipe = GetMortarRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+            if (recipe != null)
+            {
+                grindingTimerMax = recipe.grindingTimerMax;
+            }
+        }
+
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+        {
+            progressNormalized = newValue / grindingTimerMax
+        });
+    }
+
+    private void Update()
+    {
+        // 1. Client Logic: เล่นเสียง/Animation ถ้ากำลังบดอยู่
+        if (isGrinding.Value)
+        {
+            OnGrind?.Invoke(this, EventArgs.Empty);
+        }
+
+        // 2. Server Logic: คำนวณเวลาและการเปลี่ยนร่างวัตถุดิบ
+        if (!IsServer) return;
+
+        if (isGrinding.Value && HasKitchenObject())
+        {
+            MortarRecipeSO recipe = GetMortarRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+            
+            if (recipe != null)
+            {
+                grindingTimer.Value += Time.deltaTime;
+
+                if (grindingTimer.Value >= recipe.grindingTimerMax)
+                {
+                    // บดเสร็จแล้ว -> เปลี่ยนวัตถุ
+                    KitchenObjectSO outputKitchenObjectSO = recipe.output;
+                    
+                    KitchenObject.DestroyKitchenObject(GetKitchenObject());
+                    KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+                    
+                    // รีเซ็ตค่า
+                    grindingTimer.Value = 0f;
+                    isGrinding.Value = false;
+                }
+            }
+            else
+            {
+                // ถ้าของบนโต๊ะบดไม่ได้ ให้หยุดบด
+                isGrinding.Value = false;
+                grindingTimer.Value = 0f;
+            }
         }
     }
 
     private void GameInput_OnInteractAlternateActionStarted(object sender, EventArgs e)
     {
-        // Start Grinding
-        // if (Player.Instance.GetSelectedCounter() == this && HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
-        // {
-        //     isGrinding = true;
-        //     currentRecipe = GetMortarRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
-        // }
+        // ตรวจสอบว่าเป็นผู้เล่นคนนี้จริงๆ ที่กด และกำลังเลือก Counter นี้อยู่
+        if (Player.LocalInstance != null && Player.LocalInstance.GetSelectedCounter() == this)
+        {
+            SetIsGrindingServerRpc(true);
+        }
     }
 
     private void GameInput_OnInteractAlternateActionCanceled(object sender, EventArgs e)
     {
-        // Stop Grinding
-        isGrinding = false;
+        SetIsGrindingServerRpc(false);
     }
-    
-    private void Update()
+
+    // ส่งคำสั่งไป Server ว่าเริ่ม/หยุดบด
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsGrindingServerRpc(bool isGrinding)
     {
         if (isGrinding)
         {
-            grindingTimer += Time.deltaTime;
-
-            OnGrind?.Invoke(this, EventArgs.Empty);
-            
-            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs 
-            { 
-                progressNormalized = grindingTimer / currentRecipe.grindingTimerMax 
-            });
-
-            if (grindingTimer >= currentRecipe.grindingTimerMax)
+            // ตรวจสอบเงื่อนไขก่อนเริ่มบด (กันโปร)
+            if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
             {
-                KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
-                GetKitchenObject().DestroySelf();
-                KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
-                
-                // Reset
-                isGrinding = false;
-                grindingTimer = 0f;
-                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0f });
+                this.isGrinding.Value = true;
             }
         }
         else
         {
-            return;
+            this.isGrinding.Value = false;
         }
     }
 
+    // การ Interact ปกติ (หยิบ/วาง)
     public override void Interact(Player player)
     {
+        // ส่งคำสั่ง Interact ไปที่ Server โดยระบุ ID ผู้เล่น
+        InteractServerRpc(player.OwnerClientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractServerRpc(ulong clientId)
+    {
+        // Server หาตัว Player จาก ID
+        Player player = KitchenGameMultiplayer.Instance.GetPlayerFromClientId(clientId);
+        
+        if (player == null) return;
+
         if (!HasKitchenObject())
         {
+            // Counter ว่าง
             if (player.HasKitchenObject())
             {
                 if (HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
                 {
-                    player.GetKitchenObject().SetKitchenObjectParent(this);
-                    grindingTimer = 0f;
+                    // วางของลงบน Counter
+                    KitchenObject kitchenObject = player.GetKitchenObject();
+                    kitchenObject.SetKitchenObjectParent(this);
                     
-                    MortarRecipeSO mortarRecipeSO = GetMortarRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
-                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs 
-                    { 
-                        progressNormalized = grindingTimer / mortarRecipeSO.grindingTimerMax
-                    });
+                    // รีเซ็ตค่าการบดเมื่อวางของใหม่
+                    grindingTimer.Value = 0f;
                 }
             }
         }
         else
         {
-            if (!player.HasKitchenObject())
+            // Counter มีของ
+            if (player.HasKitchenObject())
             {
-                GetKitchenObject().SetKitchenObjectParent(player);
-                grindingTimer = 0f;
-                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0f });
-            }
-            else if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
-            {
-                if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                // ผู้เล่นถือของ -> เช็คว่าเป็นจานไหม
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
                 {
-                    GetKitchenObject().DestroySelf();
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
+                    }
                 }
+            }
+            else
+            {
+                // ผู้เล่นมือเปล่า -> หยิบของ
+                GetKitchenObject().SetKitchenObjectParent(player);
             }
         }
     }
     
-
+    // --- Helper Functions (Logic เดิม) ---
     private bool HasRecipeWithInput(KitchenObjectSO inputKitchenObjectSO)
     {
         return GetMortarRecipeSOWithInput(inputKitchenObjectSO) != null;
@@ -133,5 +197,14 @@ public class MortarCounter : BaseCounter, IHasProgress
             }
         }
         return null;
+    }
+    
+    private void OnDestroy()
+    {
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnInteractAlternateActionStarted -= GameInput_OnInteractAlternateActionStarted;
+            GameInput.Instance.OnInteractAlternateActionCanceled -= GameInput_OnInteractAlternateActionCanceled;
+        }
     }
 }

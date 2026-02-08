@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Wind Tower
   towerPrefab: {fileID: 7113302821176625787, guid: ad707529623a0d34a8741d525f6129b3, type: 3}
-  damage: 20
+  attackType: 0
+  damage: 8
   damageType: {fileID: 11400000, guid: 98fcdda784f36cc478ef26c5dac2faa1, type: 2}
-  fireRate: 2
+  fireRate: 3
   attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
-  projectilePoolTag: LightningBolt
+  projectilePrefab: {fileID: 7160124127237156218, guid: f61e5faab946f904fbd7fbd30df0b576, type: 3}
+  projectilePoolTag: 
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

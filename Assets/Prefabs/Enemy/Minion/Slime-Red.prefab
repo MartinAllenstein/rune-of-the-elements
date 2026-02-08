@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 285713437052349106, guid: f9a2970f5838d324e83310924fe5c089, type: 3}
       propertyPath: m_Name
-      value: SlimeRed
+      value: Slime-Red
       objectReference: {fileID: 0}
     - target: {fileID: 412001797388199415, guid: f9a2970f5838d324e83310924fe5c089, type: 3}
       propertyPath: m_Controller
@@ -25,9 +25,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: f96badb6e0eaee149a267dfb1a3be579, type: 3}
     - target: {fileID: 3915903305937227581, guid: f9a2970f5838d324e83310924fe5c089, type: 3}
-      propertyPath: moveSpeed
-      value: 3
-      objectReference: {fileID: 0}
+      propertyPath: resistances.Array.data[0].damageType
+      value: 
+      objectReference: {fileID: 11400000, guid: 59b5021de367a4444b8b6c9dbed00f5b, type: 2}
     - target: {fileID: 5323688706605193833, guid: f9a2970f5838d324e83310924fe5c089, type: 3}
       propertyPath: m_Controller
       value: 

@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Water Tower
   towerPrefab: {fileID: 5295056210863721097, guid: 91d2a572b4e449643afc9c606baf1ac0, type: 3}
-  damage: 20
+  attackType: 2
+  damage: 3
   damageType: {fileID: 11400000, guid: b495ea121eec0b946b238333a8a3ea36, type: 2}
-  fireRate: 2
-  attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
-  projectilePoolTag: LightningBolt
+  fireRate: 1
+  attackRadius: 7.5
+  projectilePrefab: {fileID: 0}
+  projectilePoolTag: 
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 2517978465840327729, guid: 5d88a31c5b54a9f40b74544b29a64a76, type: 3}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.6
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

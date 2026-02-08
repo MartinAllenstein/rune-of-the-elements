@@ -46,7 +46,7 @@ public class CharacterSelectReady : NetworkBehaviour
         if (allClientsReady)
         {
             GameLobby.Instance.DeleteLobby();
-            Loader.LoadNetwork(Loader.Scene.MapScene1);
+            Loader.LoadNetwork(Loader.Scene.MapLevel1);
         }
     }
 

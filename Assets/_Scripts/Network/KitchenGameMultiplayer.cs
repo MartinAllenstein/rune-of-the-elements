@@ -43,7 +43,7 @@ public class KitchenGameMultiplayer : NetworkBehaviour
         {
             // Single Player
             StartHost();
-            Loader.LoadNetwork(Loader.Scene.MapScene1);
+            Loader.LoadNetwork(Loader.Scene.MapLevel1);
         }
     }
 

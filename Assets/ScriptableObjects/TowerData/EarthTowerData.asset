@@ -14,9 +14,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Earth Tower
   towerPrefab: {fileID: 4917591025257156972, guid: 042c337b97015454a83188f78d1450c9, type: 3}
-  damage: 20
+  attackType: 0
+  damage: 25
   damageType: {fileID: 11400000, guid: bbf833d1ff5a86640aefa778d19ef2a9, type: 2}
-  fireRate: 2
-  attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: a5d6af17af9ad01439733c865692ca9e, type: 3}
-  projectilePoolTag: LightningBolt
+  fireRate: 0.8
+  attackRadius: 8
+  projectilePrefab: {fileID: 6227680326847629763, guid: 35e3c46ef7c10ec4db9c7e52e097f88d, type: 3}
+  projectilePoolTag: 
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.99209595
+      value: 0.0000005813781
+      inSlope: -1.7346188
+      outSlope: -1.7346188
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.031821176
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

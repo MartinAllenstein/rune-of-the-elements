@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aa7d486eff896419ee7740a3a0e3d0, type: 3}
+  m_Name: Water+WindTowerData
+  m_EditorClassIdentifier: 
+  towerName: Water+Wind Tower
+  towerPrefab: {fileID: 5467485899128566745, guid: 4874d0c1305679c42840f27502df6b15, type: 3}
+  attackType: 2
+  damage: 5
+  damageType: {fileID: 11400000, guid: b495ea121eec0b946b238333a8a3ea36, type: 2}
+  fireRate: 2
+  attackRadius: 9
+  projectilePrefab: {fileID: 0}
+  projectilePoolTag: 
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 2517978465840327729, guid: 4ea5128b90e787a44b860f93213cf095, type: 3}
+  zoneDuration: 4
+  zoneTickRate: 1
+  slowMultiplier: 0.3
+  chainBounces: 0
+  chainRange: 0
+  chainDamageMultiplier: 0

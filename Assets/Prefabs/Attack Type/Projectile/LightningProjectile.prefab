@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8982995181044680989
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -4239230187154634618, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1507044269
+      objectReference: {fileID: 0}
+    - target: {fileID: 2928912889417532583, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: vfxLifetime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2928912889417532583, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: hitVfxPrefab
+      value: 
+      objectReference: {fileID: 2509782780150127589, guid: 5146175876f2b5b46ba1590fc7f06560, type: 3}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4531703660154565448, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902273583184186908, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}
+      propertyPath: m_Name
+      value: LightningProjectile
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 41b5a50e527214f44a08a8a1db5fa546, type: 3}

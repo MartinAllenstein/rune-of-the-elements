@@ -8,8 +8,10 @@ public static class Loader
     {
         MainMenuScene,
         LoadingScene,
-        MapScene1,
+        MapLevel1,
         MapLevel2,
+        MapLevel3,
+        MapLevel4,
         LobbyScene,
         CharacterSelectScene,
     }

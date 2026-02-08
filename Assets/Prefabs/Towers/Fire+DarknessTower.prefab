@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8086902023712793652
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056448989166281967, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952914984124223303, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ffa7ea38967c43c44b9ac466203bc0ec, type: 3}
+    - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: towerData
+      value: 
+      objectReference: {fileID: 11400000, guid: 14e55e18674b2824bb7629707202187c, type: 2}
+    - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: activeDuration
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ffa7ea38967c43c44b9ac466203bc0ec, type: 3}
+    - target: {fileID: 4312790372117518317, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: m_Name
+      value: Fire+DarknessTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534733554300218990, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3789870239
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}

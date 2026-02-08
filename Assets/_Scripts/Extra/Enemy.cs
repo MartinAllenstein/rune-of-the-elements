@@ -39,6 +39,9 @@ public class Enemy : NetworkBehaviour, IHasProgress
     private float attackTimer = 0f;
     private TheBase baseHealth;
     private TheBase targetBase;
+    
+    private float currentSpeedMultiplier = 1f;
+    private float slowDurationTimer = 0f;
 
     private bool isAttackingBase = false;
     private bool isDead = false;
@@ -117,6 +120,15 @@ public class Enemy : NetworkBehaviour, IHasProgress
         if (!IsServer) return;
         if (targetBase == null) return;
         if (isDead) return;
+        
+        if (slowDurationTimer > 0)
+        {
+            slowDurationTimer -= Time.deltaTime;
+            if (slowDurationTimer <= 0)
+            {
+                currentSpeedMultiplier = 1f; // หมดเวลา Slow, กลับมาเร็วปกติ
+            }
+        }
 
         if (isAttackingBase)
         {
@@ -142,14 +154,24 @@ public class Enemy : NetworkBehaviour, IHasProgress
             }
         }
     }
+    public void ApplySlow(float multiplier, float duration)
+    {
+        if (multiplier < currentSpeedMultiplier)
+        {
+            currentSpeedMultiplier = multiplier;
+        }
+        
+        slowDurationTimer = Mathf.Max(slowDurationTimer, duration);
+    }
 
     private void MoveAlongPath()
     {
         if (targetWaypoint == null) return;
 
         Vector3 dir = (targetWaypoint.position - transform.position).normalized;
-
-        transform.position += dir * moveSpeed * Time.deltaTime;
+        
+        float finalSpeed = moveSpeed * currentSpeedMultiplier;
+        transform.position += dir * finalSpeed * Time.deltaTime;
 
         // Flip sprite based on movement direction (X-axis)
         if (dir.x > 0.05f)

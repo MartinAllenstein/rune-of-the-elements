@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 3873a4eea9d9f1d4bb285306abfc1ad2, type: 2}
     - target: {fileID: 2852413568257038897, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: activeDuration
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3315820995741133749, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Sprite
@@ -67,6 +67,10 @@ PrefabInstance:
     - target: {fileID: 4312790372117518317, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
       propertyPath: m_Name
       value: FireTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 5534733554300218990, guid: ba276fb47458b45449e17a6bd99e1235, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1649877121
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

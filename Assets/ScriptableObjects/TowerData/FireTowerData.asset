@@ -14,9 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: Fire Tower
   towerPrefab: {fileID: 5467485899128566745, guid: 3caa3978b8eb5e340849a85f4688b17e, type: 3}
+  attackType: 0
   damage: 20
   damageType: {fileID: 11400000, guid: 59b5021de367a4444b8b6c9dbed00f5b, type: 2}
   fireRate: 2
-  attackRadius: 10
-  projectilePrefab: {fileID: 8902273583184186908, guid: 8c80ef42d5a8d0b4bad0934e01aee4a7, type: 3}
+  attackRadius: 8
+  projectilePrefab: {fileID: 6227680326847629763, guid: 60e9ff0503269a24a91daca83d033cb3, type: 3}
   projectilePoolTag: FireBolt
+  useArc: 0
+  arcCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  arcHeight: 2
+  chargeTime: 1
+  explosionRadius: 3
+  chargeVfxPrefab: {fileID: 0}
+  explosionVfxPrefab: {fileID: 0}
+  zonePrefab: {fileID: 0}
+  zoneDuration: 3
+  zoneTickRate: 0.5
+  slowMultiplier: 0.5
+  chainBounces: 0
+  chainRange: 5
+  chainDamageMultiplier: 0.8
